@@ -321,3 +321,26 @@ CREATE INDEX IF NOT EXISTS idx_reviews_part ON reviews(partId);
 CREATE INDEX IF NOT EXISTS idx_appointments_customer ON appointments(customerId);
 CREATE INDEX IF NOT EXISTS idx_appointments_service ON appointments(serviceId);
 CREATE INDEX IF NOT EXISTS idx_cars_country ON cars(country);
+
+-- Дополнительные индексы для конкурентных операций и оптимизации
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_orders_status_created ON orders(status, "createdAt");
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_parts_category_manufacturer ON parts(categoryId, manufacturerId);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_cars_brand_model ON cars(brand, model);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_compatibility_score ON compatibility("compatibilityScore");
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_compatibility_difficulty ON compatibility("installDifficulty");
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_parts_price ON parts(price);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_cars_year ON cars(year);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_orders_amount ON orders(amount);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_reviews_rating ON reviews(rating);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_appointments_date ON appointments("appointmentDate");
+
+-- Композитные индексы для сложных запросов
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_composite_car_parts ON compatibility(carId, partId);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_composite_category_price ON parts(categoryId, price);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_composite_manufacturer_price ON parts(manufacturerId, price);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_composite_country_year ON cars(country, year);
+
+-- Индексы для поиска и фильтрации
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_parts_name_search ON parts USING gin(to_tsvector('english', "name"));
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_cars_brand_search ON cars USING gin(to_tsvector('english', brand));
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_cars_model_search ON cars USING gin(to_tsvector('english', model));

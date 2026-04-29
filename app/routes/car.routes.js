@@ -18,8 +18,11 @@ module.exports = app => {
   // Delete a car with id
   router.delete("/:id", cars.delete);
 
-  // Delete all cars
-  router.delete("/", cars.deleteAll);
+  // Get cars by country
+  router.get("/country/:country", cars.getCarsByCountry);
+
+  // Get countries statistics
+  router.get("/stats/countries", cars.getCountriesStats);
 
   app.use('/api/cars', router);
 };
