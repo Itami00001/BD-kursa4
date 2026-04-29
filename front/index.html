@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tunning Manual 8080 - Система тюнинга автомобилей</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>TM</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav>
+        <div class="container">
+            <div class="nav-container">
+                <a href="index.html" class="logo">Tunning Manual 8080</a>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Главная</a></li>
+                    <li><a href="pages/configurations.html">Конфигурации</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                    <li><a href="http://localhost:8080/api-docs" target="_blank" id="swaggerLink">Swagger</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="btn-favorites" onclick="openFavoritesModal()">Избранное <span id="favoritesCount">(0)</span></button>
+                    <button class="btn-auth" id="authButton" onclick="handleAuthClick()">Вход</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Герой секция -->
+            <section class="section fade-in-up">
+                <div class="hero-content">
+                    <h1 class="section-title">Tunning Manual 8080</h1>
+                    <p style="text-align: center; font-size: 1.2rem; margin-bottom: 2rem;">
+                        Ваша интеллектуальная система подбора тюнинговых деталей для автомобилей
+                    </p>
+                    <div style="text-align: center;">
+                        <a href="pages/configurations.html" class="btn">Перейти к конфигурациям</a>
+                        <a href="#about" class="btn btn-secondary">Узнать больше</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- О проекте -->
+            <section id="about" class="section fade-in-up">
+                <h2 class="section-title">О проекте</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3> Цель</h3>
+                        <p>
+                            Создать инновационную платформу для предоставления выбора и демонстрации оценки
+                            совместимости
+                            тюнинговых деталей с различными моделями автомобилей.
+                            Каждая деталь оценивается по 10-балльной шкале,
+                            обеспечивая максимальную точность выбора.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3> Идея</h3>
+                        <p>
+                            Упростить процесс выбора тюнинговых компонентов для автолюбителей,
+                            предоставив интеллектуальную систему рекомендаций, учитывающую технические
+                            характеристики и совместимость оборудования.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3> Инновации</h3>
+                        <p>
+                            Использование современных технологий машинного обучения и анализа данных
+                            для создания персонализированных рекомендаций по тюнингу автомобилей.
+                            Использование js логик для демонстрации графиков и интерактивных элементов.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Технологический стек -->
+            <section class="section fade-in-up">
+                <h2 class="section-title">Технологический стек</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3> Backend</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>🟢 Node.js</li>
+                            <li>🟢 Express.js</li>
+                            <li>🟢 Sequelize ORM</li>
+                            <li>🟢 PostgreSQL</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3> DevOps</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>🟢 Docker</li>
+                            <li>🟢 Docker Compose</li>
+                            <li>🟢 Nodemon (Hot Reload)</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3> Документация</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>🟢 Swagger API</li>
+                            <li>🟢 Markdown</li>
+                            <li>🟢 GitHub Pages</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Статистика из БД -->
+            <section class="section fade-in-up">
+                <h2 class="section-title">Статистика системы (PostgreSQL)</h2>
+                <div id="db-stats">
+                    <p style="text-align: center; color: rgba(255,255,255,0.5);">Загрузка статистики из базы данных...
+                    </p>
+                </div>
+            </section>
+
+            <!-- Моя заинтересованность -->
+            <section class="section fade-in-up">
+                <h2 class="section-title">Моя заинтересованность в проекте</h2>
+                <div class="card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+                    <h3> Почему этот проект важен для меня</h3>
+                    <p style="font-size: 1.1rem; line-height: 1.8;">
+                        Этот проект представляет собой уникальную возможность объединить мою страсть к автомобилям
+                        с профессиональными навыками в области разработки программного обеспечения, а также
+                        реализовать идею синхронизации веб‑решений – теоретических оценок деталей и их
+                        конфигураций – с практической частью через CAN‑шину и блок управления, подключённый к
+                        реальному автомобилю через соответствующее приложение.
+                        <br><br>
+                        Я глубоко убеждён, что современные технологии, позволяющие передавать и
+                        совмещать данные о теоретических характеристиках компонентов с реальными параметрами
+                        автомобиля по CAN‑шине, могут кардинально изменить подход к автомобильному тюнингу,
+                        сделав его более доступным, безопасным и эффективным.
+                        <br><br>
+                        Создание этой системы позволяет мне внести реальный вклад в развитие автомобильной
+                        индустрии и помочь тысячам автолюбителей сделать правильный выбор, используя
+                        синхронизированные веб‑данные и непосредственное управление автомобилем через приложение.
+                        <br><br>
+                        Проект сочетает в себе сложные технические задачи, работу с большими данными, интеграцию
+                        CAN‑шины и блока управления, а также создание удобного пользовательского опыта – именно
+                        те аспекты разработки, которые меня вдохновляют и мотивируют развиваться профессионально.
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span
+                            style="display: inline-block; margin: 0.5rem; padding: 0.5rem 1rem; background: var(--color-3); border-radius: 20px;">
+                            Автомобильная индустрия
+                        </span>
+                        <span
+                            style="display: inline-block; margin: 0.5rem; padding: 0.5rem 1rem; background: var(--color-3); border-radius: 20px;">
+                            Веб-разработка
+                        </span>
+                        <span
+                            style="display: inline-block; margin: 0.5rem; padding: 0.5rem 1rem; background: var(--color-3); border-radius: 20px;">
+                            Анализ данных
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Возможности системы -->
+            <section class="section fade-in-up">
+                <h2 class="section-title">Возможности системы</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3> Умный поиск</h3>
+                        <p>Интеллектуальный подбор деталей с учетом совместимости и предпочтений пользователя</p>
+                    </div>
+                    <div class="card">
+                        <h3> Оценка совместимости</h3>
+                        <p>10-балльная шкала оценки совместимости деталей с конкретными моделями автомобилей</p>
+                    </div>
+                    <div class="card">
+                        <h3> Заказы и услуги</h3>
+                        <p>Полный цикл от выбора деталей до заказа и записи на установку</p>
+                    </div>
+                    <div class="card">
+                        <h3> Отзывы и рейтинги</h3>
+                        <p>Сообщество пользователей с отзывами и рекомендациями по деталям</p>
+                    </div>
+                    <div class="card">
+                        <h3> Персонализация</h3>
+                        <p>Индивидуальные рекомендации на основе истории выбора и предпочтений</p>
+                    </div>
+                    <div class="card">
+                        <h3> Визуализация через графики</h3>
+                        <p>Реализовано с помощью библиотеки D3.js для создания интерактивных графиков</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Контакты -->
+            <section id="contact" class="section fade-in-up">
+                <h2 class="section-title">Контакты</h2>
+                <div class="card" style="max-width: 600px; margin: 0 auto; text-align: center;">
+                    <p style="font-size: 1.1rem;">
+                        gmail: <a href="mailto:student@example.com"
+                            style="color: var(--accent-color);">student@example.com</a><br>
+                        Телефон: +7 (900) 123-45-67<br>
+                        Локация: Россия, Москва<br>
+                        GitHub: <a href="#" style="color: var(--accent-color);">github.com/student</a>
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <a href="pages/configurations.html" class="btn">Начать использовать</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Модальное окно избранного -->
+    <div id="favoritesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeFavoritesModal()">&times;</span>
+            <h2>Избранные машины</h2>
+            <div id="favoritesList">
+                <p style="text-align: center; color: rgba(255,255,255,0.5);">Список избранного пуст</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('login')">Войти</button>
+                <button class="auth-tab" onclick="switchTab('register')">Регистрация</button>
+            </div>
+            
+            <!-- Форма входа -->
+            <div id="loginForm" class="auth-form active">
+                <h2>Вход в систему</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Логин</label>
+                        <input type="text" id="loginEmail" required placeholder="admin или test">
+                    </div>
+                    <div class="form-group">
+                        <label>Пароль</label>
+                        <input type="password" id="loginPassword" required placeholder="adminadmin или testtest">
+                    </div>
+                    <button type="submit" class="btn btn-full">Войти</button>
+                </form>
+            </div>
+            
+            <!-- Форма регистрации -->
+            <div id="registerForm" class="auth-form">
+                <h2>Регистрация</h2>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label>Имя</label>
+                        <input type="text" id="registerName" required placeholder="Введите имя">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" required placeholder="Введите email">
+                    </div>
+                    <div class="form-group">
+                        <label>Телефон</label>
+                        <input type="tel" id="registerPhone" required placeholder="Введите телефон">
+                    </div>
+                    <div class="form-group">
+                        <label>Пароль</label>
+                        <input type="password" id="registerPassword" required placeholder="Введите пароль">
+                    </div>
+                    <button type="submit" class="btn btn-full">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 2rem 0; background: var(--color-6); margin-top: 2rem;">
+        <div class="container">
+            <p>&copy; 2026 Tunning Manual 8080. Все права защищены.</p>
+            <p>Создано для автолюбителей</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Функции модального окна избранного
+        function openFavoritesModal() {
+            document.getElementById('favoritesModal').style.display = 'block';
+            loadFavorites();
+        }
+
+        function closeFavoritesModal() {
+            document.getElementById('favoritesModal').style.display = 'none';
+        }
+
+        function getFavoritesKey() {
+            const userEmail = localStorage.getItem('userEmail');
+            return userEmail ? `favorites_${userEmail}` : 'favorites_guest';
+        }
+
+        function addToFavorites(car) {
+            const key = getFavoritesKey();
+            let favorites = JSON.parse(localStorage.getItem(key) || '[]');
+            
+            if (!favorites.find(f => f.id === car.id)) {
+                favorites.push(car);
+                localStorage.setItem(key, JSON.stringify(favorites));
+                updateFavoritesCount();
+                alert('Машина добавлена в избранное!');
+            } else {
+                alert('Эта машина уже в избранном');
+            }
+        }
+
+        function removeFromFavorites(carId) {
+            const key = getFavoritesKey();
+            let favorites = JSON.parse(localStorage.getItem(key) || '[]');
+            favorites = favorites.filter(f => f.id !== carId);
+            localStorage.setItem(key, JSON.stringify(favorites));
+            updateFavoritesCount();
+            loadFavorites();
+        }
+
+        function loadFavorites() {
+            const key = getFavoritesKey();
+            const favorites = JSON.parse(localStorage.getItem(key) || '[]');
+            const container = document.getElementById('favoritesList');
+            
+            if (favorites.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.5);">Список избранного пуст</p>';
+            } else {
+                container.innerHTML = favorites.map(car => `
+                    <div class="favorite-item" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 1rem;">
+                        <div>
+                            <strong style="color: var(--accent-color);">${car.brand} ${car.model}</strong>
+                            <div style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">${car.year} • ${car.country}</div>
+                        </div>
+                        <button onclick="removeFromFavorites(${car.id})" style="background: var(--color-4); color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Удалить</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateFavoritesCount() {
+            const key = getFavoritesKey();
+            const favorites = JSON.parse(localStorage.getItem(key) || '[]');
+            document.getElementById('favoritesCount').textContent = `(${favorites.length})`;
+        }
+
+        // Функции модального окна авторизации
+        function openAuthModal() {
+            document.getElementById('authModal').style.display = 'block';
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.auth-tab');
+            const forms = document.querySelectorAll('.auth-form');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Проверка учетных данных (заглушка для демонстрации)
+            if ((email === 'admin' && password === 'adminadmin') || 
+                (email === 'test' && password === 'testtest')) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                alert('Вы вошли в аккаунт!');
+                closeAuthModal();
+                updateAuthButton();
+            } else {
+                alert('Неверный email или пароль');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('registerEmail').value;
+            
+            // Регистрация (заглушка для демонстрации)
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userEmail', email);
+            alert('Вы вошли в аккаунт!');
+            closeAuthModal();
+            updateAuthButton();
+        }
+
+        function handleAuthClick() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (isLoggedIn) {
+                logout();
+            } else {
+                openAuthModal();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            alert('Вы вышли из аккаунта');
+            updateAuthButton();
+        }
+
+        function updateAuthButton() {
+            const button = document.getElementById('authButton');
+            const swaggerLink = document.getElementById('swaggerLink');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userEmail = localStorage.getItem('userEmail');
+            
+            if (isLoggedIn) {
+                button.textContent = 'Выход';
+                button.style.background = 'var(--color-4)';
+                
+                // Показать Swagger только для admin
+                if (userEmail === 'admin') {
+                    swaggerLink.style.display = 'inline-block';
+                } else {
+                    swaggerLink.style.display = 'none';
+                }
+            } else {
+                button.textContent = 'Вход';
+                button.style.background = 'var(--primary-color)';
+                swaggerLink.style.display = 'none';
+            }
+            
+            // Обновить счетчик избранного при смене пользователя
+            updateFavoritesCount();
+        }
+
+        // Закрытие по клику вне окна
+        window.onclick = function(event) {
+            const modal = document.getElementById('authModal');
+            const favoritesModal = document.getElementById('favoritesModal');
+            if (event.target === modal) {
+                closeAuthModal();
+            }
+            if (event.target === favoritesModal) {
+                closeFavoritesModal();
+            }
+        }
+
+        // Обновить кнопку при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthButton();
+            updateFavoritesCount();
+        });
+    </script>
+</body>
+
+</html>

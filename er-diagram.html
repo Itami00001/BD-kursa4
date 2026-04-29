@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ER-диаграмма системы тюнинга автомобилей</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .description {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .entity-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .entity-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .entity-card h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ER-диаграмма системы тюнинга автомобилей "TunningManual8080"</h1>
+        
+        <div class="description">
+            <h3>Описание системы</h3>
+            <p>Система предназначена для подбора и оценки совместимости тюнинговых деталей для автомобилей. 
+            Каждая деталь оценивается по 10-балльной шкале совместимости с конкретной моделью автомобиля.</p>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+erDiagram
+    КАТЕГОРИИ_ДЕТАЛЕЙ {
+        int id PK
+        string название
+    }
+    ДЕТАЛИ {
+        int id PK
+        string наименование
+        decimal цена
+        int категория_id FK
+        int производитель_id FK
+    }
+    ПРОИЗВОДИТЕЛИ {
+        int id PK
+        string название
+    }
+    АВТОМОБИЛИ {
+        int id PK
+        string марка
+        string модель
+        int год_выпуска
+    }
+    СОВМЕСТИМОСТЬ {
+        int id PK
+        int автомобиль_id FK
+        int деталь_id FK
+        text примечание
+    }
+    КЛИЕНТЫ {
+        int id PK
+        string фио
+        string телефон
+        string email
+    }
+    ЗАКАЗЫ {
+        int id PK
+        date дата
+        decimal сумма
+        int клиент_id FK
+        int акция_id FK
+    }
+    АКЦИИ {
+        int id PK
+        string название
+        text описание
+        decimal скидка
+    }
+    ОТЗЫВЫ {
+        int id PK
+        int клиент_id FK
+        int деталь_id FK
+        int оценка
+        text текст
+        date дата
+    }
+    УСЛУГИ_УСТАНОВКИ {
+        int id PK
+        string название
+        decimal цена
+        int длительность_минут
+    }
+    ЗАПИСИ_НА_УСЛУГИ {
+        int id PK
+        date дата
+        time время
+        int клиент_id FK
+        int услуга_id FK
+        string статус
+    }
+    АДМИНИСТРАТОРЫ {
+        int id PK
+        string логин
+        string пароль
+    }
+    НАСТРОЙКИ_СИСТЕМЫ {
+        int id PK
+        string ключ
+        string значение
+        int администратор_id FK
+    }
+
+    КАТЕГОРИИ_ДЕТАЛЕЙ ||--o{ ДЕТАЛИ : содержит
+    ПРОИЗВОДИТЕЛИ ||--o{ ДЕТАЛИ : производит
+    АВТОМОБИЛИ ||--o{ СОВМЕСТИМОСТЬ : имеет
+    ДЕТАЛИ ||--o{ СОВМЕСТИМОСТЬ : совместима_с
+    КЛИЕНТЫ ||--o{ ЗАКАЗЫ : делает
+    ЗАКАЗЫ }o--o{ ДЕТАЛИ : содержит
+    АКЦИИ ||--o{ ЗАКАЗЫ : применяется_к
+    КЛИЕНТЫ ||--o{ ОТЗЫВЫ : оставляет
+    ДЕТАЛИ ||--o{ ОТЗЫВЫ : получает
+    УСЛУГИ_УСТАНОВКИ ||--o{ ЗАПИСИ_НА_УСЛУГИ : назначаются
+    КЛИЕНТЫ ||--o{ ЗАПИСИ_НА_УСЛУГИ : записывается
+    АДМИНИСТРАТОРЫ ||--|| НАСТРОЙКИ_СИСТЕМЫ : управляет
+            </div>
+        </div>
+
+        <div class="entity-list">
+            <div class="entity-card">
+                <h3> АВТОМОБИЛИ</h3>
+                <p>Основная информация об автомобилях, для которых подбираются детали</p>
+                <ul>
+                    <li>Марка, модель, год выпуска</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> КАТЕГОРИИ_ДЕТАЛЕЙ</h3>
+                <p>Классификация тюнинговых деталей</p>
+                <ul>
+                    <li>Название категории</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> ПРОИЗВОДИТЕЛИ</h3>
+                <p>Информация о производителях деталей</p>
+                <ul>
+                    <li>Название производителя</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> ДЕТАЛИ</h3>
+                <p>Каталог тюнинговых деталей</p>
+                <ul>
+                    <li>Наименование, цена</li>
+                    <li>Связь с категорией и производителем</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> СОВМЕСТИМОСТЬ</h3>
+                <p>Оценка совместимости деталей с автомобилями</p>
+                <ul>
+                    <li>Примечания по установке</li>
+                    <li>Связь детали и автомобиля</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> КЛИЕНТЫ</h3>
+                <p>Информация о клиентах сервиса</p>
+                <ul>
+                    <li>ФИО, телефон, email</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> ЗАКАЗЫ</h3>
+                <p>Информация о заказах деталей</p>
+                <ul>
+                    <li>Дата, сумма заказа</li>
+                    <li>Связь с клиентом и акцией</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> АКЦИИ</h3>
+                <p>Маркетинговые акции и скидки</p>
+                <ul>
+                    <li>Название, описание, скидка</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> ОТЗЫВЫ</h3>
+                <p>Отзывы клиентов о деталях</p>
+                <ul>
+                    <li>Оценка, текст отзыва</li>
+                    <li>Дата отзыва</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> УСЛУГИ_УСТАНОВКИ</h3>
+                <p>Услуги по установке деталей</p>
+                <ul>
+                    <li>Название, цена</li>
+                    <li>Длительность в минутах</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> ЗАПИСИ_НА_УСЛУГИ</h3>
+                <p>Записи клиентов на установку</p>
+                <ul>
+                    <li>Дата, время записи</li>
+                    <li>Статус выполнения</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> АДМИНИСТРАТОРЫ</h3>
+                <p>Администраторы системы</p>
+                <ul>
+                    <li>Логин, пароль</li>
+                </ul>
+            </div>
+
+            <div class="entity-card">
+                <h3> НАСТРОЙКИ_СИСТЕМЫ</h3>
+                <p>Конфигурация системы</p>
+                <ul>
+                    <li>Ключ-значение настроек</li>
+                    <li>Связь с администратором</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="description">
+            <h3>Описание связей между сущностями:</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div style="background: #fff; padding: 15px; border-radius: 5px; border-left: 4px solid #5483B3;">
+                    <h4 style="color: #052659; margin-top: 0;">📗 Связи 1 ко многим (One-to-Many)</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>КАТЕГОРИИ_ДЕТАЛЕЙ → ДЕТАЛИ:</strong> Одна категория содержит много деталей</li>
+                        <li><strong>ПРОИЗВОДИТЕЛИ → ДЕТАЛИ:</strong> Один производитель производит много деталей</li>
+                        <li><strong>АВТОМОБИЛИ → СОВМЕСТИМОСТЬ:</strong> Один автомобиль имеет много записей совместимости</li>
+                        <li><strong>ДЕТАЛИ → СОВМЕСТИМОСТЬ:</strong> Одна деталь совместима со многими автомобилями</li>
+                        <li><strong>КЛИЕНТЫ → ЗАКАЗЫ:</strong> Один клиент делает много заказов</li>
+                        <li><strong>АКЦИИ → ЗАКАЗЫ:</strong> Одна акция применяется к многим заказам</li>
+                        <li><strong>КЛИЕНТЫ → ОТЗЫВЫ:</strong> Один клиент оставляет много отзывов</li>
+                        <li><strong>ДЕТАЛИ → ОТЗЫВЫ:</strong> Одна деталь получает много отзывов</li>
+                        <li><strong>УСЛУГИ_УСТАНОВКИ → ЗАПИСИ_НА_УСЛУГИ:</strong> Одна услуга назначается много раз</li>
+                        <li><strong>КЛИЕНТЫ → ЗАПИСИ_НА_УСЛУГИ:</strong> Один клиент записывается много раз</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #fff; padding: 15px; border-radius: 5px; border-left: 4px solid #C1E8FF;">
+                    <h4 style="color: #052659; margin-top: 0;">📙 Особые типы связей</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>ЗАКАЗЫ ↔ ДЕТАЛИ:</strong> Многие ко многим (через связь содержит)</li>
+                        <li><strong>АДМИНИСТРАТОРЫ ↔ НАСТРОЙКИ_СИСТЕМЫ:</strong> Один к одному (управляет)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="description">
+            <h3>Основные возможности системы:</h3>
+            <ul>
+                <li><strong>Подбор деталей:</strong> Оценка совместимости деталей с автомобилями</li>
+                <li><strong>Каталог:</strong> Полный каталог тюнинговых деталей с фильтрацией</li>
+                <li><strong>Заказы:</strong> Оформление заказов с учетом акций</li>
+                <li><strong>Услуги:</strong> Запись на услуги установки</li>
+                <li><strong>Отзывы:</strong> Система отзывов и рейтингов</li>
+                <li><strong>Акции:</strong> Маркетинговые акции и скидки</li>
+                <li><strong>Администрирование:</strong> Управление настройками системы</li>
+            </ul>
+        </div>
+
+        <div class="description">
+            <h3> Дополнительная ER-диаграмма (более наглядная)</h3>
+            <p>Альтернативное представление структуры базы данных с акцентом на связи</p>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TD
+    %% Основные сущности
+    A[ АВТОМОБИЛИ] -->|1:N| B[ СОВМЕСТИМОСТЬ]
+    C[ ДЕТАЛИ] -->|1:N| B
+    D[ КАТЕГОРИИ_ДЕТАЛЕЙ] -->|1:N| C
+    E[ ПРОИЗВОДИТЕЛИ] -->|1:N| C
+    
+    %% Клиенты и заказы
+    F[ КЛИЕНТЫ] -->|1:N| G[ ЗАКАЗЫ]
+    F -->|1:N| H[ ОТЗЫВЫ]
+    F -->|1:N| I[ ЗАПИСИ_НА_УСЛУГИ]
+    
+    G -->|M:N| C
+    L[ АКЦИИ] -->|1:N| G
+    C -->|1:N| H
+    
+    %% Услуги
+    K[ УСЛУГИ_УСТАНОВКИ] -->|1:N| I
+    
+    %% Администраторы
+    N[ АДМИНИСТРАТОРЫ] -->|1:1| O[ НАСТРОЙКИ_СИСТЕМЫ]
+    
+    %% Стили для наглядности
+    classDef primary fill:#C1E8FF,stroke:#052659,stroke-width:2px,color:black
+    classDef secondary fill:#5483B3,stroke:#052659,stroke-width:2px,color:white
+    classDef tertiary fill:#052659,stroke:#333,stroke-width:2px,color:white
+    
+    class A,F,N primary
+    class C,D,E,K,L secondary
+    class B,G,H,I,O tertiary
+    
+    %% Подписи связей
+    linkStyle 0 stroke:#5483B3,stroke-width:2px
+    linkStyle 1 stroke:#5483B3,stroke-width:2px
+    linkStyle 2 stroke:#C1E8FF,stroke-width:2px
+    linkStyle 3 stroke:#C1E8FF,stroke-width:2px
+    linkStyle 4 stroke:#052659,stroke-width:2px
+    linkStyle 5 stroke:#052659,stroke-width:2px
+    linkStyle 6 stroke:#052659,stroke-width:2px
+    linkStyle 7 stroke:#FF6B6B,stroke-width:3px,stroke-dasharray: 5 5
+    linkStyle 8 stroke:#052659,stroke-width:2px
+    linkStyle 9 stroke:#5483B3,stroke-width:2px
+    linkStyle 10 stroke:#C1E8FF,stroke-width:2px
+    linkStyle 11 stroke:#FF6B6B,stroke-width:3px,stroke-dasharray: 5 5
+            </div>
+        </div>
+
+        <div class="description">
+            <h3>📊 Легенда дополнительной диаграммы:</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div style="background: #fff; padding: 15px; border-radius: 5px; border-left: 4px solid #C1E8FF;">
+                    <h4 style="color: #052659; margin-top: 0;">🔵 Основные сущности</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>АВТОМОБИЛИ:</strong> Объекты тюнинга</li>
+                        <li><strong>КЛИЕНТЫ:</strong> Пользователи системы</li>
+                        <li><strong>АДМИНИСТРАТОРЫ:</strong> Управление системой</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #fff; padding: 15px; border-radius: 5px; border-left: 4px solid #5483B3;">
+                    <h4 style="color: #052659; margin-top: 0;">🟢 Каталоги и справочники</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>ДЕТАЛИ:</strong> Товары</li>
+                        <li><strong>КАТЕГОРИИ:</strong> Классификация</li>
+                        <li><strong>ПРОИЗВОДИТЕЛИ:</strong> Поставщики</li>
+                        <li><strong>УСЛУГИ:</strong> Установка</li>
+                        <li><strong>АКЦИИ:</strong> Маркетинг</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #fff; padding: 15px; border-radius: 5px; border-left: 4px solid #052659;">
+                    <h4 style="color: #052659; margin-top: 0;">🟡 Связующие таблицы</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>СОВМЕСТИМОСТЬ:</strong> Деталь ↔ Автомобиль</li>
+                        <li><strong>ЗАКАЗЫ:</strong> Клиент → Детали</li>
+                        <li><strong>ОТЗЫВЫ:</strong> Клиент → Деталь</li>
+                        <li><strong>ЗАПИСИ:</strong> Клиент → Услуга</li>
+                        <li><strong>НАСТРОЙКИ_СИСТЕМЫ:</strong> Администратор → Настройки</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#C1E8FF',
+                primaryTextColor: '#000000',
+                primaryBorderColor: '#052659',
+                lineColor: '#5483B3',
+                secondaryColor: '#5483B3',
+                secondaryTextColor: '#ffffff',
+                tertiaryColor: '#052659',
+                tertiaryTextColor: '#ffffff'
+            }
+        });
+    </script>
+</body>
+</html>

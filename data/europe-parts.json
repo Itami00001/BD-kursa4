@@ -1,0 +1,115 @@
+{
+  "forCar": "germany",
+  "items": [
+    {
+      "id": "bmw_e30_suspension_hrss",
+      "name": "Комплект подвески HR Sport для BMW E30",
+      "category": "suspension.coilovers",
+      "specs": {
+        "powerGain": 0,
+        "torqueGain": 0,
+        "compatibilityScore": 10,
+        "installDifficulty": 4,
+        "price": 45000
+      },
+      "requires": [],
+      "synergy": [
+        "bmw_e30_wheels_bbs",
+        "bmw_e30_brakes_brembo"
+      ],
+      "instruction": "Установить амортизаторы и пружины, выполнить развал-схождение."
+    },
+    {
+      "id": "bmw_e30_engine_m50_turbo_kit",
+      "name": "Турбо-кит для M50/M52 (BMW E30)",
+      "category": "engine.turbo_kit",
+      "specs": {
+        "powerGain": 120,
+        "torqueGain": 150,
+        "compatibilityScore": 6,
+        "installDifficulty": 8,
+        "price": 95000
+      },
+      "requires": [
+        "bmw_e30_intercooler_custom",
+        "bmw_e30_exhaust_76mm",
+        "bmw_e30_fuel_system_upgrade"
+      ],
+      "synergy": [
+        "bmw_e30_ecu_chip_tune"
+      ],
+      "instruction": "Установить турбину, интеркулер, усилить топливную систему."
+    },
+    {
+      "id": "vw_golf4_engine_turbo_kit",
+      "name": "Турбо-кит для 1.8T (Volkswagen Golf IV GTI)",
+      "category": "engine.turbo_kit",
+      "specs": {
+        "powerGain": 60,
+        "torqueGain": 80,
+        "compatibilityScore": 9,
+        "installDifficulty": 5,
+        "price": 55000
+      },
+      "requires": [
+        "vw_golf4_intercooler_upgrade",
+        "vw_golf4_exhaust_76mm"
+      ],
+      "synergy": [
+        "vw_golf4_ecu_remap"
+      ],
+      "instruction": "Установить турбо-кит, выполнить прошивку ЭБУ."
+    },
+    {
+      "id": "skoda_octavia_a5_engine_tuning",
+      "name": "Чип-тюнинг для 2.0 TDI (Skoda Octavia A5)",
+      "category": "engine.chip_tuning",
+      "specs": {
+        "powerGain": 30,
+        "torqueGain": 50,
+        "compatibilityScore": 10,
+        "installDifficulty": 1,
+        "price": 15000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_octavia_a5_exhaust_76mm"
+      ],
+      "instruction": "Выполнить прошивку ЭБУ для увеличения мощности."
+    },
+    {
+      "id": "skoda_octavia_a7_engine_tuning",
+      "name": "Чип-тюнинг для 2.0 TSI (Skoda Octavia A7)",
+      "category": "engine.chip_tuning",
+      "specs": {
+        "powerGain": 35,
+        "torqueGain": 60,
+        "compatibilityScore": 10,
+        "installDifficulty": 1,
+        "price": 18000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_octavia_a7_intake_cold_air"
+      ],
+      "instruction": "Выполнить прошивку ЭБУ для оптимизации мощности."
+    },
+    {
+      "id": "skoda_rapid_engine_tuning",
+      "name": "Чип-тюнинг для 1.0 TSI (Skoda Rapid)",
+      "category": "engine.chip_tuning",
+      "specs": {
+        "powerGain": 20,
+        "torqueGain": 30,
+        "compatibilityScore": 10,
+        "installDifficulty": 1,
+        "price": 12000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_rapid_exhaust_60mm"
+      ],
+      "instruction": "Выполнить прошивку ЭБУ для увеличения мощности."
+    }
+  ]
+}

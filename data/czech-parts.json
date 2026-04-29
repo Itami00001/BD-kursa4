@@ -1,0 +1,156 @@
+{
+  "forCar": "czech",
+  "items": [
+    {
+      "id": "skoda_octavia_a5_engine_chip",
+      "name": "Чип-тюнинг для 2.0 TDI (Skoda Octavia A5)",
+      "category": "engine.chip_tuning",
+      "specs": {
+        "powerGain": 30,
+        "torqueGain": 50,
+        "compatibilityScore": 10,
+        "installDifficulty": 1,
+        "price": 15000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_octavia_a5_exhaust_76mm"
+      ],
+      "instruction": "Выполнить прошивку ЭБУ для увеличения мощности и крутящего момента."
+    },
+    {
+      "id": "skoda_octavia_a7_engine_chip",
+      "name": "Чип-тюнинг для 2.0 TSI (Skoda Octavia A7)",
+      "category": "engine.chip_tuning",
+      "specs": {
+        "powerGain": 35,
+        "torqueGain": 60,
+        "compatibilityScore": 10,
+        "installDifficulty": 1,
+        "price": 18000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_octavia_a7_intake_cold_air"
+      ],
+      "instruction": "Выполнить прошивку ЭБУ для оптимизации работы двигателя."
+    },
+    {
+      "id": "skoda_rapid_engine_chip",
+      "name": "Чип-тюнинг для 1.0 TSI (Skoda Rapid)",
+      "category": "engine.chip_tuning",
+      "specs": {
+        "powerGain": 20,
+        "torqueGain": 30,
+        "compatibilityScore": 10,
+        "installDifficulty": 1,
+        "price": 12000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_rapid_exhaust_60mm"
+      ],
+      "instruction": "Выполнить прошивку ЭБУ для увеличения мощности."
+    },
+    {
+      "id": "skoda_octavia_suspension_kw",
+      "name": "Комплект подвески KW Variant 3 для Octavia A5/A7",
+      "category": "suspension.coilovers",
+      "specs": {
+        "powerGain": 0,
+        "torqueGain": 0,
+        "compatibilityScore": 9,
+        "installDifficulty": 5,
+        "price": 65000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_octavia_wheels_bbs"
+      ],
+      "instruction": "Установить амортизаторы и пружины KW, выполнить развал-схождение."
+    },
+    {
+      "id": "skoda_rapid_suspension_eibach",
+      "name": "Комплект подвески Eibach Pro-Kit для Skoda Rapid",
+      "category": "suspension.springs",
+      "specs": {
+        "powerGain": 0,
+        "torqueGain": 0,
+        "compatibilityScore": 8,
+        "installDifficulty": 3,
+        "price": 25000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_rapid_wheels_enkei"
+      ],
+      "instruction": "Установить занижающие пружины Eibach."
+    },
+    {
+      "id": "skoda_octavia_exhaust_milltek",
+      "name": "Выхлопная система Milltek для Octavia A5/A7",
+      "category": "exhaust.system",
+      "specs": {
+        "powerGain": 15,
+        "torqueGain": 25,
+        "compatibilityScore": 9,
+        "installDifficulty": 3,
+        "price": 35000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_octavia_engine_chip"
+      ],
+      "instruction": "Установить выхлопную систему Milltek Sport."
+    },
+    {
+      "id": "skoda_rapid_exhaust_borla",
+      "name": "Выхлопная система Borla для Skoda Rapid",
+      "category": "exhaust.system",
+      "specs": {
+        "powerGain": 12,
+        "torqueGain": 20,
+        "compatibilityScore": 8,
+        "installDifficulty": 3,
+        "price": 28000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_rapid_engine_chip"
+      ],
+      "instruction": "Установить выхлопную систему Borla."
+    },
+    {
+      "id": "skoda_octavia_intake_neuspeed",
+      "name": "Холодный впуск Neuspeed для Octavia A5/A7",
+      "category": "engine.intake",
+      "specs": {
+        "powerGain": 8,
+        "torqueGain": 12,
+        "compatibilityScore": 9,
+        "installDifficulty": 2,
+        "price": 12000
+      },
+      "requires": [],
+      "synergy": [
+        "skoda_octavia_exhaust_milltek"
+      ],
+      "instruction": "Установить холодный впуск Neuspeed."
+    },
+    {
+      "id": "skoda_rapid_brakes_brembo",
+      "name": "Тормозная система Brembo для Skoda Rapid",
+      "category": "brakes.big_brake_kit",
+      "specs": {
+        "powerGain": 0,
+        "torqueGain": 0,
+        "compatibilityScore": 8,
+        "installDifficulty": 4,
+        "price": 45000
+      },
+      "requires": [],
+      "synergy": [],
+      "instruction": "Установить тормозные суппорты и диски Brembo."
+    }
+  ]
+}

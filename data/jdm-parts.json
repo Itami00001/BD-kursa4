@@ -1,0 +1,125 @@
+{
+  "forCar": "japan",
+  "items": [
+    {
+      "id": "nissan_silvia_s14_turbo_quantum_racing",
+      "name": "Turbo Quantum Racing GT2871 для SR20DET (Nissan Silvia S14)",
+      "category": "engine.turbo",
+      "specs": {
+        "powerGain": 90,
+        "torqueGain": 100,
+        "compatibilityScore": 10,
+        "installDifficulty": 3,
+        "price": 21000
+      },
+      "requires": [
+        "intercooler_nissan_silvia_s14_greddy_ls",
+        "exhaust_nissan_silvia_s14_76mm",
+        "fuel_pump_nissan_silvia_s14_highflow"
+      ],
+      "synergy": [
+        "ecu_nissan_silvia_s14_tomei_chip"
+      ],
+      "instruction": "Установить турбину в штатное место, подключить интеркулер, выхлоп и усиленный топливный насос, выполнить перепрошивку ЭБУ."
+    },
+    {
+      "id": "nissan_skyline_r34_turbo_garrett",
+      "name": "Turbo Garrett GT35R для RB26DETT (Nissan Skyline R34)",
+      "category": "engine.turbo",
+      "specs": {
+        "powerGain": 120,
+        "torqueGain": 150,
+        "compatibilityScore": 9,
+        "installDifficulty": 4,
+        "price": 35000
+      },
+      "requires": [
+        "intercooler_skyline_r34_hks",
+        "exhaust_skyline_r34_80mm",
+        "fuel_pump_skyline_r34_nismo"
+      ],
+      "synergy": [
+        "ecu_skyline_r34_mine_chip"
+      ],
+      "instruction": "Установить турбину, модернизировать систему охлаждения, усилить топливную систему, настроить ЭБУ."
+    },
+    {
+      "id": "nissan_silvia_s15_turbo_hks",
+      "name": "Turbo HKS GT2540 для SR20DET (Nissan Silvia S15)",
+      "category": "engine.turbo",
+      "specs": {
+        "powerGain": 80,
+        "torqueGain": 90,
+        "compatibilityScore": 10,
+        "installDifficulty": 3,
+        "price": 28000
+      },
+      "requires": [
+        "intercooler_silvia_s15_hks",
+        "exhaust_silvia_s15_76mm"
+      ],
+      "synergy": [
+        "ecu_silvia_s15_hks_chip"
+      ],
+      "instruction": "Установить турбину HKS, подключить интеркулер и выхлопную систему."
+    },
+    {
+      "id": "toyota_supra_a80_turbo_hks",
+      "name": "Turbo Kit HKS для 2JZ-GTE (Toyota Supra A80)",
+      "category": "engine.turbo_kit",
+      "specs": {
+        "powerGain": 200,
+        "torqueGain": 250,
+        "compatibilityScore": 9,
+        "installDifficulty": 6,
+        "price": 85000
+      },
+      "requires": [
+        "intercooler_supra_a80_hks",
+        "exhaust_supra_a80_90mm",
+        "fuel_pump_supra_a80_walbro"
+      ],
+      "synergy": [
+        "ecu_supra_a80_hks_chip"
+      ],
+      "instruction": "Полная замена турбосистемы с установкой интеркулера и выхлопа."
+    },
+    {
+      "id": "honda_civic_ek9_intake_icebox",
+      "name": "Cold Air Intake Icebox для B16B (Honda Civic EK9)",
+      "category": "engine.intake",
+      "specs": {
+        "powerGain": 8,
+        "torqueGain": 10,
+        "compatibilityScore": 9,
+        "installDifficulty": 1,
+        "price": 8000
+      },
+      "requires": [],
+      "synergy": [
+        "exhaust_civic_ek9_60mm"
+      ],
+      "instruction": "Установить холодный впуск в штатное место."
+    },
+    {
+      "id": "mazda_rx7_fd3s_turbo_hks",
+      "name": "Turbo HKS T04R для 13B-REW (Mazda RX-7 FD3S)",
+      "category": "engine.turbo",
+      "specs": {
+        "powerGain": 100,
+        "torqueGain": 120,
+        "compatibilityScore": 8,
+        "installDifficulty": 5,
+        "price": 45000
+      },
+      "requires": [
+        "intercooler_rx7_fd3s_hks",
+        "exhaust_rx7_fd3s_80mm"
+      ],
+      "synergy": [
+        "ecu_rx7_fd3s_hks_chip"
+      ],
+      "instruction": "Установить турбину HKS, модернизировать систему охлаждения."
+    }
+  ]
+}

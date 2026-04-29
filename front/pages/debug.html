@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Проверка БД | Tunning Manual 8080</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏎️</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            padding: 2rem;
+        }
+        .nav-debug {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
+        .nav-debug a {
+            color: #ff6b35;
+            text-decoration: none;
+            margin-right: 1rem;
+        }
+        .nav-debug a:hover {
+            text-decoration: underline;
+        }
+        .btn-debug {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-debug:hover {
+            background: #ff8555;
+        }
+        h1 {
+            color: #ff6b35;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid #333;
+        }
+        .card h2 {
+            color: #ff6b35;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .status.ok { background: #4CAF50; color: white; }
+        .status.error { background: #f44336; color: white; }
+        .status.warning { background: #FF9800; color: white; }
+        .status.pending { background: #666; color: white; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        th {
+            color: #ff6b35;
+            font-weight: 600;
+        }
+        .value {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error-msg {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        .btn:hover { background: #ff8555; }
+        .log {
+            background: #0a0a0a;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        .log-entry { margin: 0.2rem 0; }
+        .log-entry.error { color: #f44336; }
+        .log-entry.success { color: #4CAF50; }
+        .log-entry.info { color: #2196F3; }
+    </style>
+</head>
+<body>
+    <div class="nav-debug">
+        <div>
+            <a href="../index.html">🏠 Главная</a>
+            <a href="configurations.html">🚗 Конфигурации</a>
+        </div>
+        <div>
+            <a href="http://localhost:8080/api-docs" target="_blank" class="btn-debug" id="swaggerLink">📚 Swagger</a>
+        </div>
+    </div>
+
+    <h1>🔧 Debug Panel - Проверка подключения к БД</h1>
+    
+    <div class="grid">
+        <div class="card">
+            <h2>🌐 Статус сервера <span id="server-status" class="status pending">Проверка...</span></h2>
+            <div id="server-info">Проверка доступности сервера...</div>
+        </div>
+
+        <div class="card">
+            <h2>🗄️ PostgreSQL <span id="db-status" class="status pending">Проверка...</span></h2>
+            <table>
+                <tr><td>Версия:</td><td id="db-version" class="value">-</td></tr>
+                <tr><td>Имя БД:</td><td id="db-name" class="value">-</td></tr>
+                <tr><td>Время:</td><td id="db-time" class="value">-</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>📊 Таблицы <span id="tables-status" class="status pending">Проверка...</span></h2>
+            <table>
+                <tr><th>Таблица</th><th>Записей</th></tr>
+                <tbody id="tables-stats"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>🚗 Автомобили <span id="cars-status" class="status pending">Проверка...</span></h2>
+            <table>
+                <tr><th>Страна</th><th>Кол-во</th></tr>
+                <tbody id="cars-by-country"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>🔌 API Endpoints <span id="api-status" class="status pending">Проверка...</span></h2>
+            <div id="api-tests"></div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>📝 Лог проверок</h2>
+            <button class="btn" onclick="runAllChecks()">🔄 Обновить все проверки</button>
+            <div id="log" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        async function checkServer() {
+            const status = document.getElementById('server-status');
+            const info = document.getElementById('server-info');
+            
+            try {
+                const start = Date.now();
+                const response = await fetch('/api');
+                const time = Date.now() - start;
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    status.className = 'status ok';
+                    status.textContent = 'OK';
+                    info.innerHTML = `<div class="value">${data.message}</div><div>Версия: ${data.version}</div><div>Время ответа: ${time}мс</div>`;
+                    addLog('Сервер доступен', 'success');
+                    return true;
+                } else {
+                    throw new Error('HTTP ' + response.status);
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = 'ERROR';
+                info.innerHTML = `<div class="error-msg">${error.message}</div>`;
+                addLog('Ошибка сервера: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        async function checkDatabase() {
+            const status = document.getElementById('db-status');
+            
+            try {
+                const response = await fetch('/api/db/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: 'SELECT version(), current_database(), NOW()' })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.results.length > 0) {
+                        const row = data.results[0];
+                        const versionMatch = row.version.match(/PostgreSQL (\d+\.\d+)/);
+                        
+                        document.getElementById('db-version').textContent = versionMatch ? versionMatch[1] : row.version;
+                        document.getElementById('db-name').textContent = row.current_database;
+                        document.getElementById('db-time').textContent = new Date(row.now).toLocaleString();
+                        
+                        status.className = 'status ok';
+                        status.textContent = 'OK';
+                        addLog('PostgreSQL подключена', 'success');
+                        return true;
+                    }
+                }
+                throw new Error('Нет данных');
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = 'ERROR';
+                addLog('Ошибка БД: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        async function checkTables() {
+            const status = document.getElementById('tables-status');
+            const tbody = document.getElementById('tables-stats');
+            
+            try {
+                const response = await fetch('/api/db/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: `
+                        SELECT 'cars' as name, COUNT(*) as cnt FROM cars
+                        UNION ALL SELECT 'parts', COUNT(*) FROM parts
+                        UNION ALL SELECT 'compatibility', COUNT(*) FROM compatibility
+                        UNION ALL SELECT 'categories', COUNT(*) FROM categories
+                        UNION ALL SELECT 'manufacturers', COUNT(*) FROM manufacturers
+                        UNION ALL SELECT 'customers', COUNT(*) FROM customers
+                    `})
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    tbody.innerHTML = '';
+                    
+                    if (data.success) {
+                        data.results.forEach(row => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `<td>${row.name}</td><td class="value">${row.cnt}</td>`;
+                            tbody.appendChild(tr);
+                        });
+                        
+                        status.className = 'status ok';
+                        status.textContent = 'OK';
+                        addLog('Таблицы проверены', 'success');
+                        return true;
+                    }
+                }
+                throw new Error('Ошибка запроса');
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="2" class="error-msg">${error.message}</td></tr>`;
+                status.className = 'status error';
+                status.textContent = 'ERROR';
+                addLog('Ошибка таблиц: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        async function checkCars() {
+            const status = document.getElementById('cars-status');
+            const tbody = document.getElementById('cars-by-country');
+            
+            try {
+                const response = await fetch('/api/configurations/countries');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    tbody.innerHTML = '';
+                    
+                    if (data.success && data.countries) {
+                        data.countries.forEach(c => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `<td>${c.flag} ${c.name}</td><td class="value">${c.carCount}</td>`;
+                            tbody.appendChild(tr);
+                        });
+                        
+                        status.className = 'status ok';
+                        status.textContent = 'OK';
+                        addLog('Автомобили загружены', 'success');
+                        return true;
+                    }
+                }
+                throw new Error('Ошибка загрузки');
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="2" class="error-msg">${error.message}</td></tr>`;
+                status.className = 'status error';
+                status.textContent = 'ERROR';
+                addLog('Ошибка автомобилей: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        async function checkAPI() {
+            const status = document.getElementById('api-status');
+            const container = document.getElementById('api-tests');
+            
+            const endpoints = [
+                { url: '/api/configurations/countries', name: 'Страны' },
+                { url: '/api/configurations/cars/japan', name: 'Авто Японии' },
+                { url: '/api/stats', name: 'Статистика' }
+            ];
+            
+            container.innerHTML = 'Проверка...';
+            let allOk = true;
+            
+            const results = [];
+            for (const ep of endpoints) {
+                try {
+                    const response = await fetch(ep.url);
+                    results.push({ name: ep.name, ok: response.ok });
+                    if (!response.ok) allOk = false;
+                } catch (error) {
+                    results.push({ name: ep.name, ok: false });
+                    allOk = false;
+                }
+            }
+            
+            container.innerHTML = results.map(r => `
+                <div style="display: flex; justify-content: space-between; margin: 0.5rem 0;">
+                    <span>${r.name}</span>
+                    <span class="status ${r.ok ? 'ok' : 'error'}">${r.ok ? 'OK' : 'FAIL'}</span>
+                </div>
+            `).join('');
+            
+            status.className = allOk ? 'status ok' : 'status warning';
+            status.textContent = allOk ? 'OK' : 'PARTIAL';
+            
+            return allOk;
+        }
+
+        async function runAllChecks() {
+            log.innerHTML = '';
+            addLog('Начало проверок...', 'info');
+            
+            await checkServer();
+            await checkDatabase();
+            await checkTables();
+            await checkCars();
+            await checkAPI();
+            
+            addLog('Проверки завершены', 'info');
+        }
+
+        runAllChecks();
+        setInterval(runAllChecks, 30000);
+
+        // Управление видимостью Swagger для admin
+        const swaggerLink = document.getElementById('swaggerLink');
+        const userEmail = localStorage.getItem('userEmail');
+        if (userEmail !== 'admin') {
+            swaggerLink.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
