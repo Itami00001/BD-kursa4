@@ -104,7 +104,19 @@ app.get("/api/configurations/countries", async (req, res) => {
 app.get("/api/configurations/cars/:country", async (req, res) => {
   try {
     const db = require("./app/models");
-    const country = req.params.country;
+    const countryParam = String(req.params.country || "").trim();
+
+    const countryMap = {
+      japan: "Japan",
+      germany: "Germany",
+      america: "USA",
+      usa: "USA",
+      russia: "Russia",
+      sweden: "Sweden",
+      czech: "Czech"
+    };
+
+    const normalizedCountry = countryMap[countryParam.toLowerCase()] || countryParam;
 
     const [cars] = await db.sequelize.query(`
       SELECT 
@@ -127,10 +139,10 @@ app.get("/api/configurations/cars/:country", async (req, res) => {
         FROM compatibility
         GROUP BY carid
       ) comp ON c.id = comp.carid
-      WHERE c.country = :country
+      WHERE LOWER(c.country) = LOWER(:country)
       ORDER BY c."compatibilityRating" DESC
     `, {
-      replacements: { country }
+      replacements: { country: normalizedCountry }
     });
 
     res.json({ success: true, cars });
