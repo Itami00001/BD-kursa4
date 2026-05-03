@@ -1,117 +1,23 @@
-# Data - Tunning Manual 8080
+# Data (SQL) — Tunning Manual 8080
 
-## Описание
+Эта папка хранит **только SQL seed-файлы** для воспроизводимого разворачивания базы данных.
 
-Эта папка содержит данные о тюнинг-деталях для автомобилей разных стран.
+## Файлы
 
-## Структура файлов
+- `schema.sql` — дополнительные индексы/ограничения для стабильных сидов
+- `seed_users.sql` — стартовые пользователи (`customers`)
+- `seed_cars.sql` — стартовые автомобили (`cars`)
+- `seed_parts_compatibility.sql` — детали и совместимость (categories/manufacturers/parts/compatibility)
 
-### jdm-parts.json
-- **Назначение:** Детали для японских автомобилей (JDM)
-- **Формат:** JSON с массивом объектов деталей
-- **Категории:** Турбины, интеркулеры, впускные системы, турбо-киты
-- **Автомобили:** Nissan Silvia S14/S15, Skyline R34, Toyota Supra A80, Mazda RX-7 FD3S, Honda Civic EK9
+## Применение (PowerShell)
 
-### europe-parts.json
-- **Назначение:** Детали для европейских автомобилей
-- **Формат:** JSON с массивом объектов деталей
-- **Категории:** Подвеска, турбо-киты, чип-тюнинг
-- **Автомобили:** BMW E30, Volkswagen Golf IV GTI, Skoda Octavia A5/A7, Skoda Rapid
-
-### jdm.json (оригинал)
-- **Источник:** Скопирован из основной папки проекта
-- **Содержание:** Полные данные о JDM деталях с инструкциями
-
-### europe.json (оригинал)
-- **Источник:** Скопирован из основной папки проекта
-- **Содержание:** Полные данные о европейских деталях
-
-### czech-parts.json
-- **Назначение:** Детали для чешских автомобилей (Skoda)
-- **Формат:** JSON с массивом объектов деталей
-- **Категории:** Чип-тюнинг, подвеска, выхлопные системы, впускные системы, тормоза
-- **Автомобили:** Skoda Octavia A5/A7, Skoda Rapid
-
-## Структура объекта детали
-
-```json
-{
-  "id": "уникальный_идентификатор",
-  "name": "Название детали",
-  "category": "категория_детали",
-  "specs": {
-    "powerGain": прирост_мощности,
-    "torqueGain": прирост_момента,
-    "compatibilityScore": оценка_совместимости_1_10,
-    "installDifficulty": сложность_установки_1_10,
-    "price": цена_в_рублях
-  },
-  "requires": ["список_требуемых_деталей"],
-  "synergy": ["список_совместимых_улучшений"],
-  "instruction": "инструкция_по_установке"
-}
+```powershell
+Get-Content data\schema.sql -Encoding UTF8 | docker-compose exec -T postgresdb psql -U postgres -d tunning_manual_db -v ON_ERROR_STOP=1
+Get-Content data\seed_users.sql -Encoding UTF8 | docker-compose exec -T postgresdb psql -U postgres -d tunning_manual_db -v ON_ERROR_STOP=1
+Get-Content data\seed_cars.sql -Encoding UTF8 | docker-compose exec -T postgresdb psql -U postgres -d tunning_manual_db -v ON_ERROR_STOP=1
+Get-Content data\seed_parts_compatibility.sql -Encoding UTF8 | docker-compose exec -T postgresdb psql -U postgres -d tunning_manual_db -v ON_ERROR_STOP=1
 ```
 
-## Категории деталей
+## JSON-архив
 
-### Двигатель (Engine)
-- `engine.turbo` - Турбины
-- `engine.turbo_kit` - Турбо-киты
-- `engine.intake` - Впускные системы
-- `engine.intercooler` - Интеркулеры
-- `engine.chip_tuning` - Чип-тюнинг
-
-### Трансмиссия (Transmission)
-- `transmission.swap` - Замена коробки передач
-
-### Подвеска (Suspension)
-- `suspension.coilovers` - Настраиваемая подвеска
-
-### Выхлоп (Exhaust)
-- `exhaust.system` - Выхлопные системы
-
-## Интеграция с фронтендом
-
-Данные загружаются через `data-loader.js`:
-
-```javascript
-// Загрузка данных
-await window.partsLoader.loadPartsData();
-
-// Получение деталей для страны
-const jdmParts = window.partsLoader.getPartsForCountry('japan');
-const europeParts = window.partsLoader.getPartsForCountry('germany');
-
-// Получение рекомендаций
-const recommended = window.partsLoader.getRecommendedParts(carId, country);
-```
-
-## Оценка совместимости
-
-- **10/10** - Идеальная совместимость (Plug & Play)
-- **8-9/10** - Хорошая совместимость (минимальные доработки)
-- **6-7/10** - Средняя совместимость (требуются доработки)
-- **1-5/10** - Низкая совместимость (сложная установка)
-
-## Сложность установки
-
-- **1-3** - Легко (может установить самостоятельно)
-- **4-6** - Средне (требуются базовые навыки)
-- **7-8** - Сложно (требуется профессиональный опыт)
-- **9-10** - Экспертный уровень (требуется специализированное оборудование)
-
-## Использование в приложении
-
-1. **Выбор страны** - пользователь выбирает страну производителя
-2. **Выбор автомобиля** - пользователь выбирает конкретную модель
-3. **Показ деталей** - система показывает совместимые детали
-4. **Фильтрация** - по категории, цене, сложности установки
-5. **Расчет стоимости** - автоматический расчет комплекта
-
-## Будущее развитие
-
-1. **Расширение баз данных** - добавление новых деталей
-2. **Интеграция с API** - получение данных в реальном времени
-3. **Ценообразование** - интеграция с поставщиками
-4. **Отзывы** - добавление пользовательских оценок
-5. **Галерея** - фотографии установленных деталей
+Исходные JSON-датасеты перенесены в `data/json_archive/` и **не используются приложением в рантайме**.
