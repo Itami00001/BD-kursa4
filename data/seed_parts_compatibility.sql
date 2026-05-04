@@ -45,7 +45,7 @@ INSERT INTO manufacturers (name) VALUES ('Tomei');
 INSERT INTO manufacturers (name) VALUES ('Unknown');
 INSERT INTO manufacturers (name) VALUES ('Walbro');
 -- parts
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Турбина Quantum Racing GT2871 для SR20DET',
   0,
@@ -53,9 +53,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Quantum Racing' LIMIT 1),
   0,
   0,
+  10,
+  5,
   'Гибридный турбокомпрессор для двигателей Nissan SR20DET. Обеспечивает повышенный прирост мощности и улучшенный отклик за счет фрезерованной крыльчатки (Billet Wheel) в холодной части, сохраняя надежность на высоких оборотах.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Интеркулер GReddy LS Intercooler Kit для S14/S15',
   0,
@@ -63,9 +65,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'GReddy' LIMIT 1),
   0,
   0,
+  7,
+  5,
   'Комплект интеркулера увеличенного объема и эффективности. Снижает температуру наддувочного воздуха, что позволяет повысить мощность и снизить риск детонации при тюнинге двигателя.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выхлопная система 76мм (3 дюйма) для Nissan Silvia S14/S15',
   0,
@@ -73,9 +77,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  9,
+  5,
   'Высокопоточная выхлопная трасса из нержавеющей стали диаметром 76 мм. Уменьшает сопротивление выпуска отработавших газов, что способствует увеличению мощности двигателя, улучшению отклика и дает характерный спортивный звук.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливные форсунки Injector Dynamics ID1050x',
   0,
@@ -83,9 +89,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Injector Dynamics' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Высокопроизводительные топливные форсунки для построения мощных турбомоторов. Обеспечивают точную и стабильную подачу топлива при высоком давлении, необходимы для реализации потенциала крупных турбин и других доработок.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Спортивный распредвал выпускной HKS style для SR20',
   0,
@@ -93,9 +101,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   0,
   0,
+  4,
+  5,
   'Распредвал с измененными фазами газораспределения и подъемами клапанов. Увеличивает производительность двигателя на высоких оборотах, улучшая наполнение и очистку цилиндров.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Услуга чип-тюнинга ЭБУ TOMEI (Modification Service)',
   0,
@@ -103,9 +113,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'TOMEI' LIMIT 1),
   0,
   0,
+  8,
+  5,
   'Физическая доработка и перепрошивка штатного блока управления двигателем (ECU) для оптимизации параметров (зажигание, топливоподача) под установленные тюнинговые детали. Раскрывает потенциал аппаратных доработок.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Турбина Garrett GT2871R для Nissan Silvia S15 SR20DET',
   0,
@@ -113,9 +125,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Garrett' LIMIT 1),
   0,
   0,
+  8,
+  5,
   'Турбокомпрессор Garrett GT2871R — популярный апгрейд для двигателя SR20DET, обеспечивающий сбалансированный прирост мощности с хорошей отзывчивостью на низких и средних оборотах. Идеально подходит для стрит-использования и любительского дрифта.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Распредвалы BRIAN CROWER 264/264 12.0 для S14/S15 SR20',
   0,
@@ -123,9 +137,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Спортивные распределительные валы с увеличенной фазой и подъемом (264 градуса, 12.0 мм). Улучшают наполнение цилиндров на высоких оборотах, что повышает пиковую мощность и потенциал двигателя при работе с большой турбиной.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Интеркулер HKS фронтальный для Nissan Silvia S15',
   0,
@@ -133,9 +149,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   0,
   0,
+  9,
+  5,
   'Фронтальный интеркулер увеличенной эффективности для охлаждения наддувочного воздуха. Позволяет снизить температуру впуска, минимизировать потери мощности из-за нагрева и снизить риск детонации на форсированном двигателе.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливные форсунки SARD 850cc для Nissan Silvia S15',
   0,
@@ -143,9 +161,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  4,
+  5,
   'Высокопроизводительные форсунки увеличенной пропускной способности (850 куб.см/мин). Необходимы для подачи большего количества топлива при повышении мощности двигателя свыше 350-400 л.с. Обеспечивают стабильную работу на высоких нагрузках.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Контроллер ЭБУ APEX''i Power FC D-Jetro для S15 SR20DET',
   0,
@@ -153,9 +173,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  9,
+  5,
   'Стояночный программируемый блок управления двигателем, заменяющий штатный ЭБУ. Позволяет производить полноценную калибровку впрыска и зажигания под установленные тюнинговые детали. Комплектуется датчиками абсолютного давления (D-Jetro) для точного измерения нагрузки.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выпускная система полного прямоточного типа 3 дюйма для S15',
   0,
@@ -163,9 +185,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  10,
+  5,
   'Система выпуска с увеличенным диаметром (76 мм / 3 дюйма) от турбины до заднего глушителя. Значительно снижает противодавление в выпускном тракте, что способствует более эффективной продувке цилиндров, раскрытию потенциала турбины и увеличению мощности.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Турбина Garrett GT3582R (GT35R) для перехода на одиночную турбину на FD3S',
   0,
@@ -173,9 +197,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Garrett' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Одиночный турбокомпрессор Garrett GT3582R — популярный выбор для замены штатных двойных турбин на Mazda RX-7 FD3S. Обеспечивает значительный прирост мощности и улучшенный отклик на высоких оборотах, что идеально подходит для драг-рейсинга и дрифта.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Интеркулер HKS R-Type для Mazda RX-7 FD3S (1993-2002)',
   0,
@@ -183,9 +209,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   0,
   0,
+  9,
+  5,
   'Фронтальный интеркулер увеличенного объёма и эффективности, специально разработанный для FD3S. Обеспечивает лучшее охлаждение наддувочного воздуха, что снижает риск детонации и позволяет повысить давление наддува.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выпускная система Racing Beat 3-дюймовая (76 мм) для Mazda RX-7 FD3S',
   0,
@@ -193,9 +221,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  10,
+  5,
   'Высокопоточная выхлопная система из нержавеющей стали диаметром 76 мм. Уменьшает противодавление в выпускном тракте, что улучшает продувку цилиндров и повышает эффективность работы турбины.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливные форсунки Denso 850cc для Mazda RX-7 FD3S',
   0,
@@ -203,9 +233,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  4,
+  5,
   'Высокопроизводительные форсунки увеличенной пропускной способности, необходимые для подачи большего количества топлива при повышении мощности двигателя свыше 400 л.с. Обеспечивают стабильную работу на высоких нагрузках.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Программируемый ЭБУ Haltech Elite 2500 для Mazda RX-7 FD3S',
   0,
@@ -213,9 +245,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  7,
+  5,
   'Мощный стояночный программируемый блок управления двигателем, заменяющий штатный ЭБУ. Позволяет производить полноценную калибровку впрыска, зажигания и управления турбиной под установленные тюнинговые детали.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Спортивные апекс-селы (Apex Seals) для роторного двигателя 13B-REW',
   0,
@@ -223,9 +257,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  3,
+  5,
   'Усиленные уплотнения вершин роторов, критически важные для повышения надёжности и мощности форсированного роторного двигателя. Позволяют выдерживать более высокие температуры и давления, снижая риск задиров и разрушения.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Коллектор зажигания LS-2 coil conversion kit для Mazda RX-7 FD3S',
   0,
@@ -233,9 +269,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  6,
+  5,
   'Комплект для замены штатных катушек зажигания на более мощные катушки LS-2. Улучшает воспламенение топливно-воздушной смеси, что особенно важно для форсированных двигателей с высоким давлением наддува.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'NISMO Интеркулер для Skyline GT-R (14461-RSR45)',
   0,
@@ -243,9 +281,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'NISMO' LIMIT 1),
   0,
   0,
+  8,
+  5,
   'Оригинальный интеркулер NISMO для двигателей RB26DETT в моделях Skyline GT-R (R32, R33, R34). Изготовлен из высококачественного алюминия для максимальной теплоотдачи. Улучшает охлаждение наддувочного воздуха, снижает тепловую нагрузку (heat soak) и повышает стабильность мощности, что критически важно для форсирования двигателя.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Турбокомпрессоры Garrett GT2860R-7 (комплект под двойную установку)',
   0,
@@ -253,9 +293,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Garrett' LIMIT 1),
   0,
   0,
+  6,
+  5,
   'Комплект из двух турбин Garrett GT2860R-7 (дизелинг -9) для замены штатных турбин RB26DETT. Обеспечивает значительный прирост мощности и крутящего момента с улучшенной отзывчивостью по сравнению со стоком. Популярный выбор для достижения мощности 450-500 л.с.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливные форсунки Nismo 740cc для RB26DETT',
   0,
@@ -263,9 +305,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Nismo' LIMIT 1),
   0,
   0,
+  9,
+  5,
   'Форсунки повышенной производительности от Nismo. Предназначены для подачи большего объема топлива, необходимого при значительном повышении мощности двигателя (до ~600 л.с.). Обеспечивают точное дозирование и стабильную работу на высоких нагрузках.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Программируемый ЭБУ Link G4+ Fury для Skyline R34 GT-R',
   0,
@@ -273,9 +317,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  7,
+  5,
   'Мощный универсальный программируемый блок управления двигателем, заменяющий штатный ECU. Позволяет полностью контролировать параметры впрыска, зажигания, управления турбинами и другими системами. Необходим для реализации потенциала любых серьезных аппаратных доработок.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выпускная система полного типа 3.5 дюйма (90 мм) для R34 GT-R',
   0,
@@ -283,9 +329,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  10,
+  5,
   'Прямоточная система выпуска от турбин до заднего глушителя увеличенного диаметра. Кардинально снижает противодавление в выпускном тракте, что повышает эффективность продувки цилиндров, снижает температуру выхлопных газов и раскрывает потенциал турбин.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Комплект усиленных шатунов Tomei для RB26DETT',
   0,
@@ -293,9 +341,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Tomei' LIMIT 1),
   0,
   0,
+  3,
+  5,
   'Кованые шатуны повышенной прочности для двигателя RB26DETT. Предназначены для сборки высокофорсированных моторов, испытывающих экстремальные нагрузки (высокое давление наддува, закись азота). Критически важны для надежности при мощности свыше 500-550 л.с.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Турбина Mamba GT3582R для 2JZ-GTE',
   0,
@@ -303,9 +353,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Одиночный турбокомпрессор для замены штатных двойных турбин на двигателе 2JZ-GTE. Обеспечивает значительный прирост мощности и крутящего момента с улучшенной отзывчивостью.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Интеркулер HKS фронтальный для Supra A80',
   0,
@@ -313,9 +365,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Фронтальный интеркулер увеличенного объема и эффективности для охлаждения наддувочного воздуха. Позволяет снизить температуру впуска, минимизировать потери мощности из-за нагрева и снизить риск детонации на форсированном двигателе.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выпускная система 3.5 дюйма (90 мм) для Supra A80',
   0,
@@ -323,9 +377,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Прямоточная система выпуска увеличенного диаметра от турбины до заднего глушителя. Значительно снижает противодавление в выпускном тракте, что повышает эффективность продувки цилиндров и раскрывает потенциал турбины.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливные форсунки SSS Performance 1000cc для 2JZ-GTE',
   0,
@@ -333,9 +389,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Высокопроизводительные форсунки увеличенной пропускной способности (1000 куб.см/мин). Необходимы для подачи большего количества топлива при повышении мощности двигателя свыше 500 л.с. Обеспечивают стабильную работу на высоких нагрузках.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'ЭБУ HKS FCON VPRO Gold 3.1 для Supra A80',
   0,
@@ -343,9 +401,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Профессиональный стояночный программируемый блок управления двигателем, заменяющий штатный ECU. Позволяет производить полноценную калибровку впрыска, зажигания и управления турбиной под установленные тюнинговые детали.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Распредвалы Brian Crower BC272 для 2JZ-GTE',
   0,
@@ -353,9 +413,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Спортивные распределительные валы с увеличенной фазой и подъемом (272 градуса). Улучшают наполнение цилиндров на высоких оборотах, что повышает пиковую мощность и потенциал двигателя при работе с большой турбиной.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливный насос Walbro 255 л/ч для Supra A80',
   0,
@@ -363,9 +425,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Walbro' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Высокопроизводительный топливный насос, обеспечивающий достаточную подачу топлива для форсированного двигателя. Необходим при установке форсунок большого объема и повышении давления в системе.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'WiseFab Front Drift Angle Lock Kit (S14/S15 Front V2 Drift Angle Lock Kit with Rack Offset Spacers)',
   0,
@@ -373,9 +437,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Передний комплект на увеличение угла поворота — основное решение для дрифта, даёт до 60° выворота.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'WiseFab Rear Suspension Drop Knuckle Kit (S14/S15)',
   0,
@@ -383,9 +449,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Задний комплект опускающих кулаков — улучшает кинематику задней подвески при сильном снижении клиренса.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'WiseFab Front Drift Angle Lock Kit (R34)',
   0,
@@ -393,9 +461,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Передний комплект на увеличение угла поворота — разработан для R34, обеспечивает около 60° выворота и корректирует кинематику.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'WiseFab Front Drift Angle Lock Kit (RX-7 FD3S)',
   0,
@@ -403,9 +473,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Передний комплект на увеличение угла поворота — для RX‑7 FD, заявленный угол до 62°.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'WiseFab Front Drift Angle Lock Kit (Supra JZA80 / Soarer)',
   0,
@@ -413,9 +485,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Передний комплект на увеличение угла поворота — для Supra и Soarer, до 65° выворота.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'WiseFab Rear Suspension Drop Knuckle Kit (Supra JZA80)',
   0,
@@ -423,9 +497,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  5,
+  5,
   'Задний комплект опускающих кулаков — улучшает сцепление задней оси на lowered Supra.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Turbo Quantum Racing GT2871 для SR20DET (Nissan Silvia S14)',
   21000,
@@ -433,9 +509,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Quantum Racing' LIMIT 1),
   90,
   100,
+  10,
+  3,
   'Установить турбину в штатное место, подключить интеркулер, выхлоп и усиленный топливный насос, выполнить перепрошивку ЭБУ.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Интеркулер GReddy LS для S14/S15',
   14000,
@@ -443,9 +521,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'GReddy' LIMIT 1),
   5,
   8,
+  7,
+  5,
   'Смонтировать в переднем бампере, установить удлинённые патрубки и хомуты.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выхлопная система 76 mm (3 in) для S14/S15',
   12000,
@@ -453,9 +533,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   20,
   30,
+  9,
+  4,
   'Прикрепить к штатным точкам крепления, при необходимости подрезать фланцы.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливный насос повышенной производительности для S14',
   18000,
@@ -463,9 +545,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   2,
   5,
+  5,
+  6,
   'Установить в штатный топливный модуль, подключить к новой системе форсунок.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Распредвал HKS style для SR20 (S14)',
   18000,
@@ -473,9 +557,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   30,
   35,
+  4,
+  8,
   'Снять головку блока, установить вал, заменить пружины и сделать настройку ЭБУ.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Чип‑тюнинг ТУЭМИ (ECU) для S14 Zenki',
   30000,
@@ -483,9 +569,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   3,
   5,
+  8,
+  6,
   'Отправить штатный ECU в сервис, вернуть перепрошитый блок.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Turbo Garrett GT2871R для SR20DET (S15)',
   20000,
@@ -493,9 +581,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Garrett' LIMIT 1),
   5,
   8,
+  8,
+  5,
   'Встроить турбину, подключить HKS‑интеркулер, модуль форсунок и перепрошивку.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Интеркулер HKS фронтальный для S15',
   15000,
@@ -503,9 +593,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   5,
   8,
+  9,
+  5,
   'Установить в передний бампер, подключить к турбине.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выпускная система 3‑inch (76 mm) для S15',
   13000,
@@ -513,9 +605,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   20,
   30,
+  10,
+  3,
   'Установить без доработок.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливный насос повышенной производительности для S15',
   19000,
@@ -523,9 +617,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   2,
   5,
+  5,
+  6,
   'Установить в топливный модуль, подключить к регулятору.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Топливные форсунки SARD 850 cc для S15',
   26000,
@@ -533,9 +629,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   1,
   2,
+  4,
+  7,
   'Установить в ральку, настроить давление.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Контроллер ECU APEX''i Power FC D‑Jetro для S15',
   32000,
@@ -543,9 +641,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   3,
   5,
+  8,
+  6,
   'Установить контроллер, выполнить калибровку на стенде.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'NISMO интеркулер для RB26DETT (R34)',
   24000,
@@ -553,9 +653,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'NISMO' LIMIT 1),
   5,
   8,
+  8,
+  5,
   'Установить в передний бампер, подключить к системе турбин.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Комплект двойных турбин Garrett GT2860R‑7 для RB26DETT',
   65000,
@@ -563,9 +665,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Garrett' LIMIT 1),
   180,
   220,
+  6,
+  7,
   'Установить турбинки, подключить к интеркулеру, модернизировать топливную систему.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Turbo Garrett GT3582R (GT35R) для 13B‑REW (RX‑7 FD)',
   80000,
@@ -573,9 +677,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Garrett' LIMIT 1),
   175,
   210,
+  5,
+  8,
   'Установить турбину, собрать кастомный выпуск и вывести к интеркулеру, подключить усиленную топливную систему.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Интеркулер HKS R‑Type для FD3S',
   22000,
@@ -583,9 +689,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   5,
   8,
+  9,
+  5,
   'Установить в передний бампер, подключить к турбине.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выпускная система Racing Beat 3‑inch (76 mm) для FD3S',
   28000,
@@ -593,9 +701,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   30,
   40,
+  10,
+  3,
   'Установить без доработок.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Программируемый ЭБУ Haltech Elite 2500 для FD3S',
   45000,
@@ -603,9 +713,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   3,
   5,
+  7,
+  8,
   'Установить блок, выполнить полную калибровку на стенде.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Полный Turbo‑Kit 4G63T 600+ л.с. для Evo VIII',
   120000,
@@ -613,9 +725,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   320,
   350,
+  2,
+  9,
   'Полный разбор двигателя, установка стренг‑блоков, турбины, интеркулера, форсированных деталей и настройка ECU.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Койловеры BC Racing BR Type RS для JZX90/JZX100',
   25000,
@@ -623,9 +737,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   1,
   1,
+  9,
+  5,
   'Установить, выполнить сход‑развал.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Программируемый ЭБУ A''PEXi Power FC для 1JZ‑GTE',
   34000,
@@ -633,9 +749,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   3,
   5,
+  9,
+  6,
   'Установить блок, настроить через FC‑Datalogit.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Coil Conversion & ICM Delete Kit (Audi RS6) для 2.7T',
   15000,
@@ -643,9 +761,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   3,
   5,
+  8,
+  5,
   'Заменить катушки, удалить ICM, перепрошить ECU.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Программируемый ЭБУ Link G4+ Fury для A6 C5',
   38000,
@@ -653,9 +773,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   3,
   5,
+  9,
+  7,
   'Установить блок, выполнить калибровку.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Впускные патрубки (RS4 B5) для турбин K04',
   13000,
@@ -663,9 +785,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   5,
   8,
+  9,
+  5,
   'Сменить штатные патрубки, установить новые.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Двигатель 2.0 L AZJ (VW) для Octavia A5',
   42000,
@@ -673,9 +797,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   30,
   35,
+  8,
+  6,
   'Установить двигатель, заменить крепления и провести перепрошивку.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Turbo‑Kit K04 (RacingLine) Stage 3 для 1.4 TSI Rapid',
   95000,
@@ -683,9 +809,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   85,
   120,
+  3,
+  8,
   'Установить турбину K04, интеркулер, обновить топливную систему, перепрошить ECU.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Turbo Garrett GT35R для RB26DETT (Nissan Skyline R34)',
   35000,
@@ -693,9 +821,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Garrett' LIMIT 1),
   120,
   150,
+  9,
+  4,
   'Установить турбину, модернизировать систему охлаждения, усилить топливную систему, настроить ЭБУ.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Turbo HKS GT2540 для SR20DET (Nissan Silvia S15)',
   28000,
@@ -703,9 +833,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   80,
   90,
+  10,
+  3,
   'Установить турбину HKS, подключить интеркулер и выхлопную систему.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Turbo Kit HKS для 2JZ-GTE (Toyota Supra A80)',
   85000,
@@ -713,9 +845,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   200,
   250,
+  9,
+  6,
   'Полная замена турбосистемы с установкой интеркулера и выхлопа.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Cold Air Intake Icebox для B16B (Honda Civic EK9)',
   8000,
@@ -723,9 +857,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   8,
   10,
+  9,
+  1,
   'Установить холодный впуск в штатное место.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Turbo HKS T04R для 13B-REW (Mazda RX-7 FD3S)',
   45000,
@@ -733,9 +869,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'HKS' LIMIT 1),
   100,
   120,
+  8,
+  5,
   'Установить турбину HKS, модернизировать систему охлаждения.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Cold Air Intake 034Motorsport X34 Carbon Fiber CAI для 2.7T',
   18000,
@@ -743,9 +881,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = '034Motorsport' LIMIT 1),
   10,
   12,
+  10,
+  2,
   'Заменить штатный впуск, установить карбон‑короб.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Комплект замены АКПП на ZF310 для E36',
   55000,
@@ -753,9 +893,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   5,
   7,
+  7,
+  7,
   'Снять автомат, установить механическую коробку, адаптировать педали.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Турбо‑кит для M50/M52 (включая турбоколлектор)',
   110000,
@@ -763,9 +905,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   150,
   180,
+  4,
+  9,
   'Установить турбоколлектор, комплект турбины T3, интеркулер и подготовить топливную систему.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Программное обеспечение APR Stage 1 для Octavia A7',
   12000,
@@ -773,9 +917,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'APR' LIMIT 1),
   30,
   40,
+  10,
+  2,
   'Перепрошить штатный ECU через OBD‑II.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Тормозные колодки передние Brembo для Golf IV GTI',
   8000,
@@ -783,9 +929,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Brembo' LIMIT 1),
   1,
   2,
+  9,
+  3,
   'Снять старые колодки, установить новые.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Масляный фильтр европейского бренда (OEM)',
   1100,
@@ -793,9 +941,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   2,
   3,
+  10,
+  1,
   'Сменить фильтр во время замены масла.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Воздушный фильтр европейского бренда (OEM)',
   1400,
@@ -803,9 +953,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   2,
   3,
+  10,
+  1,
   'Сменить фильтр.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Комплект подвески HR Sport для BMW E30',
   45000,
@@ -813,9 +965,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  10,
+  4,
   'Установить амортизаторы и пружины, выполнить развал-схождение.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Турбо-кит для M50/M52 (BMW E30)',
   95000,
@@ -823,9 +977,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   120,
   150,
+  6,
+  8,
   'Установить турбину, интеркулер, усилить топливную систему.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Турбо-кит для 1.8T (Volkswagen Golf IV GTI)',
   55000,
@@ -833,9 +989,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   60,
   80,
+  9,
+  5,
   'Установить турбо-кит, выполнить прошивку ЭБУ.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Чип-тюнинг для 2.0 TDI (Skoda Octavia A5)',
   15000,
@@ -843,9 +1001,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   30,
   50,
+  10,
+  1,
   'Выполнить прошивку ЭБУ для увеличения мощности.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Чип-тюнинг для 2.0 TSI (Skoda Octavia A7)',
   18000,
@@ -853,9 +1013,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   35,
   60,
+  10,
+  1,
   'Выполнить прошивку ЭБУ для оптимизации мощности.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Чип-тюнинг для 1.0 TSI (Skoda Rapid)',
   12000,
@@ -863,9 +1025,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   20,
   30,
+  10,
+  1,
   'Выполнить прошивку ЭБУ для увеличения мощности.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Комплект подвески KW Variant 3 для Octavia A5/A7',
   65000,
@@ -873,9 +1037,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  9,
+  5,
   'Установить амортизаторы и пружины KW, выполнить развал-схождение.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Комплект подвески Eibach Pro-Kit для Skoda Rapid',
   25000,
@@ -883,9 +1049,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   0,
   0,
+  8,
+  3,
   'Установить занижающие пружины Eibach.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выхлопная система Milltek для Octavia A5/A7',
   35000,
@@ -893,9 +1061,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   15,
   25,
+  9,
+  3,
   'Установить выхлопную систему Milltek Sport.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Выхлопная система Borla для Skoda Rapid',
   28000,
@@ -903,9 +1073,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   12,
   20,
+  8,
+  3,
   'Установить выхлопную систему Borla.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Холодный впуск Neuspeed для Octavia A5/A7',
   12000,
@@ -913,9 +1085,11 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Unknown' LIMIT 1),
   8,
   12,
+  9,
+  2,
   'Установить холодный впуск Neuspeed.'
 );
-INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)
+INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)
 VALUES (
   'Тормозная система Brembo для Skoda Rapid',
   45000,
@@ -923,6 +1097,8 @@ VALUES (
   (SELECT id FROM manufacturers WHERE name = 'Brembo' LIMIT 1),
   0,
   0,
+  8,
+  4,
   'Установить тормозные суппорты и диски Brembo.'
 );
 -- compatibility

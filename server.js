@@ -221,6 +221,222 @@ app.get("/api/stats", async (req, res) => {
 });
 
 // ============================================================
+// API ГАРАЖА (user_garage - JSONB подход)
+// ============================================================
+
+// Получить гараж текущего пользователя
+app.get("/api/garage", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    // TODO: Получать userId из сессии/JWT когда будет авторизация
+    const userId = req.query.userId || 1; // Временно для теста
+
+    const [garage] = await db.sequelize.query(`
+      SELECT 
+        g.id,
+        g.name as configName,
+        g.parts,
+        g.stats,
+        g.created_at,
+        g.updated_at,
+        c.id as car_id,
+        c.brand,
+        c.model,
+        c.year,
+        c.country,
+        c.power,
+        c.torque,
+        c.acceleration,
+        c."topSpeed",
+        c."compatibilityRating"
+      FROM user_garage g
+      JOIN cars c ON g.car_id = c.id
+      WHERE g.user_id = :userId
+      LIMIT 1
+    `, { replacements: { userId } });
+
+    if (!garage || garage.length === 0) {
+      return res.json({ success: true, garage: null, message: "Гараж пуст. Выберите машину в конфигурациях." });
+    }
+
+    res.json({ success: true, garage: garage[0] });
+  } catch (error) {
+    console.error("Garage API error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Выбрать машину в гараж (создать или обновить)
+app.post("/api/garage/select-car", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const userId = req.body.userId || 1; // TODO: из сессии
+    const carId = req.body.carId;
+    const configName = req.body.name || "Моя конфигурация";
+
+    if (!carId) {
+      return res.status(400).json({ success: false, error: "carId обязателен" });
+    }
+
+    // UPSERT: создать или обновить
+    await db.sequelize.query(`
+      INSERT INTO user_garage (user_id, car_id, name, parts, stats, created_at, updated_at)
+      VALUES (:userId, :carId, :name, '[]', '{}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      ON CONFLICT (user_id) DO UPDATE SET
+        car_id = EXCLUDED.car_id,
+        name = EXCLUDED.name,
+        parts = '[]',
+        stats = '{}',
+        updated_at = CURRENT_TIMESTAMP
+    `, { replacements: { userId, carId, name: configName } });
+
+    res.json({ success: true, message: "Машина выбрана" });
+  } catch (error) {
+    console.error("Garage select-car error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Добавить деталь в гараж
+app.post("/api/garage/add-part", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const userId = req.body.userId || 1; // TODO: из сессии
+    const { partId, name, category, powerGain, torqueGain, compatibilityScore, installDifficulty } = req.body;
+
+    if (!partId) {
+      return res.status(400).json({ success: false, error: "partId обязателен" });
+    }
+
+    // Получить текущий гараж
+    const [garage] = await db.sequelize.query(
+      `SELECT id, parts FROM user_garage WHERE user_id = :userId`,
+      { replacements: { userId } }
+    );
+
+    if (!garage || garage.length === 0) {
+      return res.status(400).json({ success: false, error: "Сначала выберите машину в конфигурациях" });
+    }
+
+    let parts = garage[0].parts || [];
+    if (typeof parts === 'string') {
+      parts = JSON.parse(parts);
+    }
+
+    // Проверить, нет ли уже такой детали
+    if (parts.find(p => p.partId === partId)) {
+      return res.json({ success: false, error: "Деталь уже в гараже" });
+    }
+
+    // Добавить деталь
+    parts.push({
+      partId,
+      name: name || `Деталь #${partId}`,
+      category: category || 'unknown',
+      powerGain: powerGain || 0,
+      torqueGain: torqueGain || 0,
+      compatibilityScore: compatibilityScore || 5,
+      installDifficulty: installDifficulty || 5,
+      addedAt: new Date().toISOString()
+    });
+
+    // Пересчитать статы
+    const stats = {
+      totalPowerGain: parts.reduce((sum, p) => sum + (p.powerGain || 0), 0),
+      totalTorqueGain: parts.reduce((sum, p) => sum + (p.torqueGain || 0), 0),
+      avgCompatibility: Math.round(parts.reduce((sum, p) => sum + (p.compatibilityScore || 5), 0) / parts.length),
+      totalInstallDifficulty: Math.round(parts.reduce((sum, p) => sum + (p.installDifficulty || 5), 0) / parts.length),
+      partsCount: parts.length
+    };
+
+    // Сохранить
+    await db.sequelize.query(`
+      UPDATE user_garage 
+      SET parts = :parts::jsonb, 
+          stats = :stats::jsonb, 
+          updated_at = CURRENT_TIMESTAMP 
+      WHERE user_id = :userId
+    `, { replacements: { userId, parts: JSON.stringify(parts), stats: JSON.stringify(stats) } });
+
+    res.json({ success: true, message: "Деталь добавлена", stats });
+  } catch (error) {
+    console.error("Garage add-part error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Удалить деталь из гаража
+app.delete("/api/garage/parts/:partId", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const userId = req.query.userId || 1; // TODO: из сессии
+    const partId = parseInt(req.params.partId);
+
+    // Получить текущий гараж
+    const [garage] = await db.sequelize.query(
+      `SELECT id, parts FROM user_garage WHERE user_id = :userId`,
+      { replacements: { userId } }
+    );
+
+    if (!garage || garage.length === 0) {
+      return res.status(400).json({ success: false, error: "Гараж не найден" });
+    }
+
+    let parts = garage[0].parts || [];
+    if (typeof parts === 'string') {
+      parts = JSON.parse(parts);
+    }
+
+    // Удалить деталь
+    parts = parts.filter(p => p.partId !== partId);
+
+    // Пересчитать статы
+    const stats = parts.length > 0 ? {
+      totalPowerGain: parts.reduce((sum, p) => sum + (p.powerGain || 0), 0),
+      totalTorqueGain: parts.reduce((sum, p) => sum + (p.torqueGain || 0), 0),
+      avgCompatibility: Math.round(parts.reduce((sum, p) => sum + (p.compatibilityScore || 5), 0) / parts.length),
+      totalInstallDifficulty: Math.round(parts.reduce((sum, p) => sum + (p.installDifficulty || 5), 0) / parts.length),
+      partsCount: parts.length
+    } : {};
+
+    // Сохранить
+    await db.sequelize.query(`
+      UPDATE user_garage 
+      SET parts = :parts::jsonb, 
+          stats = :stats::jsonb, 
+          updated_at = CURRENT_TIMESTAMP 
+      WHERE user_id = :userId
+    `, { replacements: { userId, parts: JSON.stringify(parts), stats: JSON.stringify(stats) } });
+
+    res.json({ success: true, message: "Деталь удалена", stats });
+  } catch (error) {
+    console.error("Garage remove-part error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Очистить гараж (удалить все детали, оставить машину)
+app.post("/api/garage/clear-parts", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const userId = req.body.userId || 1;
+
+    await db.sequelize.query(`
+      UPDATE user_garage 
+      SET parts = '[]'::jsonb, 
+          stats = '{}'::jsonb, 
+          updated_at = CURRENT_TIMESTAMP 
+      WHERE user_id = :userId
+    `, { replacements: { userId } });
+
+    res.json({ success: true, message: "Детали очищены" });
+  } catch (error) {
+    console.error("Garage clear error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================
 // API для настройки БД (создание таблиц и индексов)
 // ============================================================
 app.post("/api/db/setup", async (req, res) => {

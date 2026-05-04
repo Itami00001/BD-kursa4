@@ -124,6 +124,30 @@ nav {
   font-weight: bold;
 }
 
+.btn-garage {
+  background: #4CAF50;
+  color: var(--text-light);
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.btn-garage:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+}
+
+.btn-garage:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
 .btn-auth {
   background: var(--primary-color);
   color: var(--text-light);

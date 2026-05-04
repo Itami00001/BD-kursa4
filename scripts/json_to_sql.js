@@ -80,6 +80,8 @@ function parseParts1Json(items) {
       price: 0,
       powerGain: 0,
       torqueGain: 0,
+      compatibilityScore: it.compatibility_score ?? null,
+      installDifficulty: it.complexity_install ?? null,
       instruction: it.description,
       extra: it
     });
@@ -116,6 +118,8 @@ function parseCatalogJson(obj, sourceName) {
       price: it.specs?.price ?? 0,
       powerGain: it.specs?.powerGain ?? 0,
       torqueGain: it.specs?.torqueGain ?? 0,
+      compatibilityScore: it.specs?.compatibilityScore ?? null,
+      installDifficulty: it.specs?.installDifficulty ?? null,
       instruction: it.instruction ?? null,
       extra: it
     });
@@ -245,11 +249,13 @@ function main() {
     const powerGain = p.powerGain === null ? 'NULL' : safeSqlNumber(p.powerGain, 0);
     const torqueGain = p.torqueGain === null ? 'NULL' : safeSqlNumber(p.torqueGain, 0);
 
-    // CompatibilityScore/installDifficulty are stored per compatibility row in JSON; keep defaults in parts.
+    const compatibilityScore = (p.compatibilityScore === null || p.compatibilityScore === undefined) ? '5' : safeSqlNumber(p.compatibilityScore, 5);
+    const installDifficulty = (p.installDifficulty === null || p.installDifficulty === undefined) ? '5' : safeSqlNumber(p.installDifficulty, 5);
+
     const instruction = p.instruction;
 
     sql.push(
-      `INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", instruction)\n` +
+      `INSERT INTO parts (name, price, categoryId, manufacturerId, "powerGain", "torqueGain", "compatibilityScore", "installDifficulty", instruction)\n` +
       `VALUES (\n` +
       `  ${safeSqlString(p.name)},\n` +
       `  ${price},\n` +
@@ -257,6 +263,8 @@ function main() {
       `  (SELECT id FROM manufacturers WHERE name = ${safeSqlString(manufacturerName)} LIMIT 1),\n` +
       `  ${powerGain},\n` +
       `  ${torqueGain},\n` +
+      `  ${compatibilityScore},\n` +
+      `  ${installDifficulty},\n` +
       `  ${instruction ? safeSqlString(instruction) : 'NULL'}\n` +
       `);`
     );

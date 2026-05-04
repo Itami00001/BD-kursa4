@@ -7,38 +7,38 @@ TRUNCATE TABLE cars RESTART IDENTITY CASCADE;
 INSERT INTO cars (id, brand, model, year, country, description, image, power, torque, acceleration, "topSpeed", "compatibilityRating")
 SELECT * FROM (
   VALUES
-    (1,'Nissan','Skyline R34',1999,'Japan',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (2,'Nissan','Silvia S14',1996,'Japan',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (3,'Nissan','Silvia S15',1999,'Japan',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (4,'Toyota','Supra A80',1998,'Japan',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (5,'Toyota','Supra MK4',1997,'Japan',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (6,'Mazda','RX-7 FD3S',1999,'Japan',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (7,'Mitsubishi','Lancer Evo',2006,'Japan',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (8,'Subaru','WRX STI',2004,'Japan',NULL,'🚗',NULL,NULL,NULL,NULL,0),
+    (1,'Nissan','Skyline R34',1999,'Japan','Легендарный спорткар с двигателем RB26DETT','🚗','280 л.с.','368 Нм','5.2 сек до 100 км/ч','250 км/ч',9.8),
+    (2,'Nissan','Silvia S14',1996,'Japan','Классический дрифт-кар с двигателем SR20DET','�','220 л.с.','275 Нм','6.5 сек до 100 км/ч','235 км/ч',9.5),
+    (3,'Nissan','Silvia S15',1999,'Japan','Последнее поколение Silvia с улучшенной аэродинамикой','�','250 л.с.','300 Нм','5.8 сек до 100 км/ч','245 км/ч',9.6),
+    (4,'Toyota','Supra A80',1998,'Japan','Легендарный тюнинг-кар с двигателем 2JZ-GTE','🚗','280 л.с.','432 Нм','4.9 сек до 100 км/ч','250 км/ч',9.9),
+    (5,'Toyota','Supra MK4',1997,'Japan','Современный японский спорткар с турбонаддувом','🚗','280 л.с.','431 Нм','5.0 сек до 100 км/ч','270 км/ч',9.2),
+    (6,'Mazda','RX-7 FD3S',1999,'Japan','Иконический роторный спорткар','🚗','280 л.с.','343 Нм','5.0 сек до 100 км/ч','250 км/ч',9.2),
+    (7,'Mitsubishi','Lancer Evo',2006,'Japan','Японский спорткар с двигателем 4G63T','🚗','280 л.с.','369 Нм','5.2 сек до 100 км/ч','250 км/ч',8.8),
+    (8,'Subaru','WRX STI',2004,'Japan','Японский спорткар с системой AWD','🚗','300 л.с.','407 Нм','5.0 сек до 100 км/ч','250 км/ч',8.7),
 
-    (9,'BMW','M3 E46',2003,'Germany',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (10,'BMW','M4',2020,'Germany',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (11,'Ford','Mustang GT',2018,'USA',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (12,'Chevrolet','Camaro SS',2019,'USA',NULL,'🚗',NULL,NULL,NULL,NULL,0),
+    (9,'BMW','M3 E46',2003,'Germany','Немецкий спортивный седан','🚗','343 л.с.','365 Нм','5.2 сек до 100 км/ч','250 км/ч',9.0),
+    (10,'BMW','M4',2020,'Germany','Современный немецкий спорткар','🚗','431 л.с.','550 Нм','4.0 сек до 100 км/ч','250 км/ч',9.1),
+    (11,'Ford','Mustang GT',2018,'USA','Американский маслкар с V8 двигателем','🚗','450 л.с.','529 Нм','4.3 сек до 100 км/ч','260 км/ч',8.9),
+    (12,'Chevrolet','Camaro SS',2019,'USA','Американский маслкар','🚗','455 л.с.','617 Нм','4.0 сек до 100 км/ч','290 км/ч',8.8),
 
-    (13,'Skoda','Octavia A5',2011,'Czech',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (14,'Skoda','Octavia A7',2018,'Czech',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (15,'Skoda','Rapid',2016,'Czech',NULL,'🚗',NULL,NULL,NULL,NULL,0),
+    (13,'Skoda','Octavia A5',2011,'Czech','Современный семейный седан','🚗','150 л.с.','250 Нм','8.7 сек до 100 км/ч','220 км/ч',8.3),
+    (14,'Skoda','Octavia A7',2018,'Czech','Последнее поколение Octavia','🚗','190 л.с.','320 Нм','7.4 сек до 100 км/ч','240 км/ч',8.5),
+    (15,'Skoda','Rapid',2016,'Czech','Компактный лифтбэк','🚗','95 л.с.','175 Нм','11.2 сек до 100 км/ч','185 км/ч',7.8),
 
-    (16,'Volvo','S60',2017,'Sweden',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (17,'Volvo','XC60',2019,'Sweden',NULL,'🚗',NULL,NULL,NULL,NULL,0),
+    (16,'Volvo','S60',2017,'Sweden','Шведский премиум седан','🚗','250 л.с.','350 Нм','6.5 сек до 100 км/ч','230 км/ч',8.5),
+    (17,'Volvo','XC60',2019,'Sweden','Шведский премиум кроссовер','🚗','250 л.с.','350 Нм','6.8 сек до 100 км/ч','230 км/ч',8.4),
 
-    (18,'Hyundai','Solaris',2019,'Russia',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (19,'Kia','Rio',2019,'Russia',NULL,'🚗',NULL,NULL,NULL,NULL,0),
+    (18,'Hyundai','Solaris',2019,'Russia','Корейский седан для России','🚗','123 л.с.','151 Нм','11.0 сек до 100 км/ч','190 км/ч',7.5),
+    (19,'Kia','Rio',2019,'Russia','Корейский хэтчбек для России','🚗','123 л.с.','151 Нм','11.0 сек до 100 км/ч','190 км/ч',7.5),
 
-    (20,'Alfa Romeo','Giulia',2019,'Europe',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (21,'Fiat','500',2018,'Europe',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (22,'Jaguar','F-Type',2017,'Europe',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (23,'Mini','Cooper S',2016,'Europe',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (24,'Peugeot','308',2018,'Europe',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (25,'Renault','Megane',2019,'Europe',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (26,'Seat','Ibiza',2017,'Europe',NULL,'🚗',NULL,NULL,NULL,NULL,0),
-    (27,'Seat','Leon',2018,'Europe',NULL,'🚗',NULL,NULL,NULL,NULL,0)
+    (20,'Alfa Romeo','Giulia',2019,'Europe','Итальянский спортивный седан','🚗','280 л.с.','400 Нм','5.2 сек до 100 км/ч','250 км/ч',9.0),
+    (21,'Fiat','500',2018,'Europe','Итальянский компактный хэтчбек','🚗','135 л.с.','203 Нм','7.9 сек до 100 км/ч','204 км/ч',8.0),
+    (22,'Jaguar','F-Type',2017,'Europe','Британский спорткар','🚗','340 л.с.','450 Нм','5.1 сек до 100 км/ч','250 км/ч',9.1),
+    (23,'Mini','Cooper S',2016,'Europe','Британский премиум хэтчбек','🚗','192 л.с.','280 Нм','6.8 сек до 100 км/ч','235 км/ч',8.6),
+    (24,'Peugeot','308',2018,'Europe','Французский компактный хэтчбек','🚗','130 л.с.','230 Нм','9.6 сек до 100 км/ч','210 км/ч',7.9),
+    (25,'Renault','Megane',2019,'Europe','Французский компактный хэтчбек','🚗','140 л.с.','240 Нм','9.0 сек до 100 км/ч','205 км/ч',8.0),
+    (26,'Seat','Ibiza',2017,'Europe','Испанский компактный хэтчбек','🚗','95 л.с.','175 Нм','11.0 сек до 100 км/ч','190 км/ч',7.7),
+    (27,'Seat','Leon',2018,'Europe','Испанский компактный хэтчбек','🚗','150 л.с.','250 Нм','8.0 сек до 100 км/ч','220 км/ч',8.1)
 ) AS v(id,brand,model,year,country,description,image,power,torque,acceleration,"topSpeed","compatibilityRating")
 WHERE NOT EXISTS (
   SELECT 1 FROM cars c WHERE c.brand = v.brand AND c.model = v.model

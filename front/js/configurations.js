@@ -93,6 +93,9 @@ function createCarCard(car) {
         <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="event.stopPropagation(); showCarDetailsFromCard(this)">
             Подробности
         </button>
+        <button class="btn btn-secondary" style="width: 100%; margin-top: 0.5rem; background: #4CAF50; color: white;" onclick="event.stopPropagation(); selectCarForGarageFromCard(this)">
+            🚗 Выбрать в гараж
+        </button>
         <button class="btn btn-secondary" style="width: 100%; margin-top: 0.5rem;" onclick="event.stopPropagation(); addToFavoritesFromCard(this)">
             Добавить в избранное
         </button>
@@ -175,9 +178,12 @@ function showCarDetails(car) {
                         </div>
                     </div>
                     
-                    <div style="display: flex; gap: 1rem;">
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                         <button class="btn" onclick="showCompatibleParts(${car.id})">
                             Показать совместимые детали
+                        </button>
+                        <button class="btn btn-secondary" style="background: #4CAF50; color: white;" onclick="selectCarForGarage(${car.id}, '${car.brand}', '${car.model}')">
+                            🚗 Выбрать в гараж
                         </button>
                         <button class="btn btn-secondary" onclick="addToFavorites(${car.id})">
                             Добавить в избранное
@@ -249,8 +255,9 @@ async function showCompatibleParts(carId) {
             const scoreColor = part.compatibilityScore >= 9 ? '#4CAF50' :
                 part.compatibilityScore >= 7 ? '#FF9800' : '#F44336';
 
+            const partData = encodeURIComponent(JSON.stringify(part));
             partsHTML += `
-                <div style="border-left: 4px solid ${scoreColor}; background: rgba(255, 187, 148, 0.1); border-radius: 10px; padding: 1.5rem; margin: 1rem 0;">
+                <div style="border-left: 4px solid ${scoreColor}; background: rgba(255, 187, 148, 0.1); border-radius: 10px; padding: 1.5rem; margin: 1rem 0;" data-part-id="${part.id}">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                         <h4 style="margin: 0; color: var(--accent-color);">${part.name}</h4>
                         <span style="color: ${scoreColor}; font-weight: bold; font-size: 1.2rem;">
@@ -267,6 +274,11 @@ async function showCompatibleParts(carId) {
                     </div>
                     ${part.instruction ? `<div style="margin-top: 0.75rem; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.9rem;"><strong>Инструкция:</strong> ${part.instruction}</div>` : ''}
                     ${part.compatibility_note ? `<div style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.6);"><em>📋 ${part.compatibility_note}</em></div>` : ''}
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary" style="flex: 1; background: #4CAF50; color: white; font-size: 0.9rem;" onclick="addPartToGarageFromConfig('${partData}')">
+                            🔧 Добавить в гараж
+                        </button>
+                    </div>
                 </div>
             `;
         });
@@ -285,6 +297,29 @@ async function showCompatibleParts(carId) {
 // Добавить в избранное (заглушка)
 function addToFavorites(carId) {
     alert(`Автомобиль ID: ${carId} добавлен в избранное!\n\nВ реальном приложении здесь будет сохранение в профиль пользователя.`);
+}
+
+// ==================== ГАРАЖ ====================
+
+// Выбрать машину в гараж из карточки
+async function selectCarForGarageFromCard(button) {
+    const car = JSON.parse(button.closest('.card').dataset.carData);
+    await selectCarForGarage(car.id, car.brand, car.model);
+}
+
+// Выбрать машину в гараж
+async function selectCarForGarage(carId, brand, model) {
+    const result = await selectCarInGarage(carId, `${brand} ${model}`);
+    if (result.success) {
+        // Показываем уведомление и обновляем кнопку гаража
+        updateGarageButton();
+    }
+}
+
+// Добавить деталь в гараж из конфигураций
+async function addPartToGarageFromConfig(partDataEncoded) {
+    const part = JSON.parse(decodeURIComponent(partDataEncoded));
+    await addPartToGarage(part);
 }
 
 // Инициализация при загрузке страницы

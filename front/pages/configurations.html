@@ -16,12 +16,13 @@
                 <ul class="nav-links">
                     <li><a href="../index.html">Главная</a></li>
                     <li><a href="configurations.html" class="active">Конфигурации</a></li>
-                    <li><a href="analytics.html">📊 Аналитика</a></li>
+                    <li><a href="analytics.html">Аналитика</a></li>
                     <li><a href="debug.html">Отладка</a></li>
                     <li><a href="../index.html#contact">Контакты</a></li>
                     <li><a href="http://localhost:8080/api-docs" target="_blank" id="swaggerLink">Swagger</a></li>
                 </ul>
                 <div class="nav-actions">
+                    <button class="btn-garage" onclick="openGarageModal()">Гараж</button>
                     <button class="btn-favorites" onclick="openFavoritesModal()">Избранное <span id="favoritesCount">(0)</span></button>
                     <button class="btn-auth" id="authButton" onclick="handleAuthClick()">Вход</button>
                 </div>
@@ -342,5 +343,7 @@
             updateFavoritesCount();
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/garage.js"></script>
 </body>
 </html>
