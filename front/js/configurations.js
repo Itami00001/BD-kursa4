@@ -274,9 +274,15 @@ async function showCompatibleParts(carId) {
                     </div>
                     ${part.instruction ? `<div style="margin-top: 0.75rem; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.9rem;"><strong>Инструкция:</strong> ${part.instruction}</div>` : ''}
                     ${part.compatibility_note ? `<div style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.6);"><em>📋 ${part.compatibility_note}</em></div>` : ''}
-                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                        <button class="btn btn-secondary" style="flex: 1; background: #4CAF50; color: white; font-size: 0.9rem;" onclick="addPartToGarageFromConfig('${partData}')">
-                            🔧 Добавить в гараж
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" style="flex: 1; min-width: 140px; background: #4CAF50; color: white; font-size: 0.85rem;" onclick="addPartToGarageFromConfig('${partData}')">
+                            🔧 В гараж
+                        </button>
+                        <button class="btn btn-secondary" style="flex: 1; min-width: 140px; background: #ffcc00; color: #333; font-size: 0.85rem;" onclick="searchPartInYandex('${encodeURIComponent(part.name)}')">
+                            🔍 Яндекс
+                        </button>
+                        <button class="btn btn-secondary" style="flex: 1; min-width: 140px; background: #4db6ac; color: white; font-size: 0.85rem;" onclick="searchPartInAvito('${encodeURIComponent(part.name)}')">
+                            🛒 Авито
                         </button>
                     </div>
                 </div>
@@ -320,6 +326,40 @@ async function selectCarForGarage(carId, brand, model) {
 async function addPartToGarageFromConfig(partDataEncoded) {
     const part = JSON.parse(decodeURIComponent(partDataEncoded));
     await addPartToGarage(part);
+}
+
+// ==================== ПОИСК ДЕТАЛЕЙ ====================
+
+// Открыть поиск детали в Яндексе
+function searchPartInYandex(partNameEncoded) {
+    const partName = decodeURIComponent(partNameEncoded);
+    const query = encodeURIComponent(`${partName} купить цена`);
+    const url = `https://yandex.ru/search/?text=${query}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+// Открыть поиск детали на Авито (через прямой ссылку)
+function searchPartInAvito(partNameEncoded) {
+    const partName = decodeURIComponent(partNameEncoded);
+    // Пробуем несколько вариантов URL Авито
+    // Вариант 1: Простой поиск по всей России
+    const query = encodeURIComponent(partName);
+    const url = `https://www.avito.ru/all?q=${query}&categoryID=5`; // categoryID=5 - запчасти
+    window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+// Альтернативный поиск на Авито через backend proxy (если прямой не работает)
+async function searchPartInAvitoViaProxy(partNameEncoded) {
+    const partName = decodeURIComponent(partNameEncoded);
+    try {
+        // Открываем результаты от нашего API
+        const url = `/api/search/avito?query=${encodeURIComponent(partName)}`;
+        window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+        console.error('Avito search error:', error);
+        // Fallback на прямой поиск
+        searchPartInAvito(partNameEncoded);
+    }
 }
 
 // Инициализация при загрузке страницы

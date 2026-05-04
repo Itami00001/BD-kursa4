@@ -4,11 +4,11 @@
 BEGIN;
 SET client_encoding = 'UTF8';
 
--- Таблица гаража пользователя
+-- Таблица гаража пользователя (без FOREIGN KEY для совместимости)
 CREATE TABLE IF NOT EXISTS user_garage (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
-    car_id INTEGER NOT NULL REFERENCES cars(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL, -- временно без REFERENCES customers(id)
+    car_id INTEGER NOT NULL,  -- временно без REFERENCES cars(id)
     name VARCHAR(100) DEFAULT 'Моя конфигурация', -- название конфигурации
     parts JSONB DEFAULT '[]', -- [{partId, name, category, powerGain, torqueGain, compatibilityScore, installDifficulty, addedAt}]
     stats JSONB DEFAULT '{}', -- {totalPowerGain, totalTorqueGain, avgCompatibility, totalInstallDifficulty}

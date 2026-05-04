@@ -627,6 +627,96 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
+// ============================================================
+// API для поиска деталей на внешних площадках
+// ============================================================
+
+// Поиск на Авито - возвращает редирект или прокси-страницу
+app.get("/api/search/avito", async (req, res) => {
+  try {
+    const { query, categoryID = 5 } = req.query;
+
+    if (!query) {
+      return res.status(400).json({ success: false, error: "Query parameter required" });
+    }
+
+    // Формируем URL для Авито
+    // categoryID=5 - запчасти и аксессуары
+    const avitoUrl = `https://www.avito.ru/all?q=${encodeURIComponent(query)}&categoryID=${categoryID}`;
+
+    // Вариант 1: Простой редирект (быстрый, но Авито может блокировать)
+    // res.redirect(avitoUrl);
+
+    // Вариант 2: Прокси через наш сервер (можно добавить кастомизацию)
+    // Делаем fetch и возвращаем HTML (может не работать без headless browser)
+    const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
+    try {
+      const response = await fetch(avitoUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Referer': 'https://www.avito.ru/'
+        },
+        timeout: 10000
+      });
+
+      if (!response.ok) {
+        throw new Error(`Avito returned ${response.status}`);
+      }
+
+      const html = await response.text();
+
+      // Модифицируем HTML для вставки нашего фрейма
+      const modifiedHtml = html
+        .replace(/<head>/i, `<head><base href="https://www.avito.ru/">`)
+        .replace(/<\/body>/i, `
+          <div style="position:fixed;top:0;left:0;right:0;background:#dc586d;color:white;padding:10px;text-align:center;z-index:99999;font-family:Inter,sans-serif;">
+            🔍 Результаты поиска на Авито для: "${query}" | 
+            <a href="${avitoUrl}" target="_blank" style="color:white;text-decoration:underline;">Открыть оригинал</a> | 
+            <a href="javascript:window.close()" style="color:white;text-decoration:underline;">Закрыть</a>
+          </div>
+          <script>window.scrollTo(0, 100);</script>
+        </body>`);
+
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(modifiedHtml);
+
+    } catch (fetchError) {
+      console.error('Avito fetch error:', fetchError.message);
+      // Fallback: редирект на прямую ссылку
+      res.redirect(avitoUrl);
+    }
+
+  } catch (error) {
+    console.error("Avito search error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Поиск через Яндекс - просто редирект (они менее агрессивно блокируют)
+app.get("/api/search/yandex", (req, res) => {
+  const { query } = req.query;
+  if (!query) {
+    return res.status(400).json({ success: false, error: "Query parameter required" });
+  }
+  const yandexUrl = `https://yandex.ru/search/?text=${encodeURIComponent(query)}`;
+  res.redirect(yandexUrl);
+});
+
+// Health check endpoint для проверки поиска
+app.get("/api/search/health", (req, res) => {
+  res.json({
+    success: true,
+    endpoints: {
+      avito: "/api/search/avito?query=турбина",
+      yandex: "/api/search/yandex?query=турбина"
+    },
+    note: "Avito может требовать headless browser для стабильной работы"
+  });
+});
+
 const db = require("./app/models");
 // Отключаем автоматический sync, чтобы не перезаписывать init.sql структуру
 // Таблицы управляются через init.sql
