@@ -889,6 +889,158 @@ app.delete("/api/news/:id", async (req, res) => {
   }
 });
 
+// ============================================================
+// API для транзакций COIN
+// ============================================================
+
+// Получить список всех пользователей (для выбора получателя)
+app.get("/api/users/list", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const customers = await db.sequelize.query(
+      `SELECT id, fullname, email FROM customers ORDER BY fullname`,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+    res.json({ success: true, customers });
+  } catch (error) {
+    console.error("Customers list error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Отправить COIN другому пользователю
+app.post("/api/transactions/send", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const { senderId, recipientId, amount, message = '' } = req.body;
+    
+    if (!senderId || !recipientId || !amount || amount <= 0) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Sender, recipient and positive amount are required" 
+      });
+    }
+    
+    if (senderId == recipientId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Cannot send COIN to yourself" 
+      });
+    }
+    
+    const amountNum = parseInt(amount);
+    
+    // Проверяем отправителя
+    const [sender] = await db.sequelize.query(
+      `SELECT id, fullname, balance FROM customers WHERE id = :senderId`,
+      { replacements: { senderId }, type: db.sequelize.QueryTypes.SELECT }
+    );
+    
+    if (!sender) {
+      return res.status(404).json({ success: false, error: "Sender not found" });
+    }
+    
+    if (sender.balance < amountNum) {
+      return res.status(400).json({ 
+        success: false, 
+        error: `Insufficient balance. You have ${sender.balance} COIN, need ${amountNum} COIN`,
+        available: sender.balance,
+        required: amountNum
+      });
+    }
+    
+    // Проверяем получателя
+    const [recipient] = await db.sequelize.query(
+      `SELECT id, fullname FROM customers WHERE id = :recipientId`,
+      { replacements: { recipientId }, type: db.sequelize.QueryTypes.SELECT }
+    );
+    
+    if (!recipient) {
+      return res.status(404).json({ success: false, error: "Recipient not found" });
+    }
+    
+    // Выполняем перевод в транзакции
+    await db.sequelize.transaction(async (t) => {
+      // Списываем у отправителя
+      await db.sequelize.query(
+        `UPDATE customers SET balance = balance - :amount WHERE id = :senderId`,
+        { 
+          replacements: { amount: amountNum, senderId }, 
+          type: db.sequelize.QueryTypes.UPDATE,
+          transaction: t 
+        }
+      );
+      
+      // Зачисляем получателю
+      await db.sequelize.query(
+        `UPDATE customers SET balance = balance + :amount WHERE id = :recipientId`,
+        { 
+          replacements: { amount: amountNum, recipientId }, 
+          type: db.sequelize.QueryTypes.UPDATE,
+          transaction: t 
+        }
+      );
+      
+      // Создаем запись транзакции
+      await db.sequelize.query(
+        `INSERT INTO transactions (sender_id, recipient_id, amount, message, created_at)
+         VALUES (:senderId, :recipientId, :amount, :message, NOW())`,
+        { 
+          replacements: { senderId, recipientId, amount: amountNum, message }, 
+          type: db.sequelize.QueryTypes.INSERT,
+          transaction: t 
+        }
+      );
+    });
+    
+    res.json({ 
+      success: true, 
+      message: `Successfully sent ${amountNum} COIN to ${recipient.fullname}`,
+      amount: amountNum,
+      recipient: recipient.fullname,
+      remainingBalance: sender.balance - amountNum
+    });
+  } catch (error) {
+    console.error("Send COIN error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Получить историю транзакций пользователя
+app.get("/api/transactions/:userId", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const userId = req.params.userId;
+    
+    const transactions = await db.sequelize.query(`
+      SELECT 
+        t.id,
+        t.amount,
+        t.message,
+        t.created_at,
+        sender.fullname as sender_name,
+        recipient.fullname as recipient_name,
+        CASE 
+          WHEN t.sender_id = :userId THEN 'sent'
+          ELSE 'received'
+        END as type
+      FROM transactions t
+      LEFT JOIN customers sender ON t.sender_id = sender.id
+      LEFT JOIN customers recipient ON t.recipient_id = recipient.id
+      WHERE t.sender_id = :userId OR t.recipient_id = :userId
+      ORDER BY t.created_at DESC
+    `, { 
+      replacements: { userId }, 
+      type: db.sequelize.QueryTypes.SELECT 
+    });
+    
+    res.json({ success: true, transactions });
+  } catch (error) {
+    console.error("Transactions fetch error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Swagger documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 

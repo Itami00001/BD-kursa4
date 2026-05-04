@@ -12,22 +12,32 @@
     <nav>
         <div class="container">
             <div class="nav-container">
-                <a href="../index.html" class="logo">Tunning Manual 8080</a>
-                <ul class="nav-links">
+                <a href="../index.html" class="logo" style="font-size: 1.5rem; white-space: nowrap;">Tunning Manual 8080</a>
+                <ul class="nav-links" style="flex: 1; justify-content: center;">
                     <li><a href="../index.html">Главная</a></li>
                     <li><a href="configurations.html" class="active">Конфигурации</a></li>
-                    <li><a href="analytics.html">Аналитика</a></li>
-                    <li><a href="debug.html">Отладка</a></li>
                     <li><a href="../index.html#contact">Контакты</a></li>
-                    <li><a href="http://localhost:8080/api-docs" target="_blank" id="swaggerLink">Swagger</a></li>
                 </ul>
+                
+                <!-- Admin collapsible menu -->
+                <div class="admin-menu" id="adminMenu" style="display: none; margin-right: 1rem;">
+                    <button class="btn-nav" onclick="toggleAdminMenu()" style="background: #636e72;">
+                        ⚙️ Admin
+                    </button>
+                    <div class="admin-dropdown" id="adminDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: var(--color-5); border-radius: 10px; padding: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; min-width: 150px;">
+                        <a href="analytics.html" style="display: block; padding: 0.5rem 1rem; color: var(--text-light); text-decoration: none; border-radius: 5px; transition: all 0.3s;">📊 Аналитика</a>
+                        <a href="debug.html" style="display: block; padding: 0.5rem 1rem; color: var(--text-light); text-decoration: none; border-radius: 5px; transition: all 0.3s;">🐛 Отладка</a>
+                        <a href="http://localhost:8080/api-docs" target="_blank" style="display: block; padding: 0.5rem 1rem; color: var(--text-light); text-decoration: none; border-radius: 5px; transition: all 0.3s;">📚 Swagger</a>
+                    </div>
+                </div>
+                
                 <div class="nav-actions">
                     <span class="coin-balance" id="coinBalance" style="display: none;">0</span>
-                    <button class="btn-news" onclick="openNewsModal()">Новости</button>
-                    <button class="btn-transactions" onclick="openTransactionsModal()">Транзакции</button>
-                    <button class="btn-garage" onclick="openGarageModal()">Гараж</button>
-                    <button class="btn-favorites" onclick="openFavoritesModal()">Избранное <span id="favoritesCount">(0)</span></button>
-                    <button class="btn-auth" id="authButton" onclick="handleAuthClick()">Вход</button>
+                    <button class="btn-nav" onclick="openNewsModal()">Новости</button>
+                    <button class="btn-nav" onclick="openTransactionsModal()">Транзакции</button>
+                    <button class="btn-nav" onclick="openGarageModal()">Гараж</button>
+                    <button class="btn-nav" onclick="openFavoritesModal()">Избранное <span id="favoritesCount">(0)</span></button>
+                    <button class="btn-nav btn-auth" id="authButton" onclick="handleAuthClick()">Вход</button>
                 </div>
             </div>
         </div>
@@ -324,19 +334,39 @@
                 swaggerLink.style.display = 'none';
             }
             
+            // Показать/скрыть Admin меню
+            const adminMenu = document.getElementById('adminMenu');
+            if (adminMenu) {
+                adminMenu.style.display = (isLoggedIn && userEmail === 'admin') ? 'block' : 'none';
+            }
+            
             // Обновить счетчик избранного при смене пользователя
             updateFavoritesCount();
+        }
+
+        // Toggle admin menu
+        function toggleAdminMenu() {
+            const dropdown = document.getElementById('adminDropdown');
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            }
         }
 
         // Закрытие по клику вне окна
         window.onclick = function(event) {
             const modal = document.getElementById('authModal');
             const favoritesModal = document.getElementById('favoritesModal');
+            const adminMenu = document.getElementById('adminMenu');
+            const adminDropdown = document.getElementById('adminDropdown');
+            
             if (event.target === modal) {
                 closeAuthModal();
             }
             if (event.target === favoritesModal) {
                 closeFavoritesModal();
+            }
+            if (adminMenu && !adminMenu.contains(event.target) && adminDropdown) {
+                adminDropdown.style.display = 'none';
             }
         }
 
@@ -350,18 +380,34 @@
         // Загрузка баланса пользователя
         async function loadUserBalance() {
             const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const balanceEl = document.getElementById('coinBalance');
+            
             if (currentUser && currentUser.id) {
                 try {
                     const response = await fetch(`/api/customers/${currentUser.id}`);
                     if (response.ok) {
                         const user = await response.json();
-                        const balanceEl = document.getElementById('coinBalance');
-                        balanceEl.textContent = (user.balance || 0).toLocaleString('ru-RU');
+                        const balance = user.balance || 0;
+                        
+                        // Обновляем отображение
+                        balanceEl.textContent = balance.toLocaleString('ru-RU');
                         balanceEl.style.display = 'flex';
+                        
+                        // Обновляем localStorage с актуальным балансом
+                        currentUser.balance = balance;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
                     }
                 } catch (error) {
                     console.error('Error loading balance:', error);
+                    // Fallback: показываем баланс из localStorage
+                    if (currentUser.balance) {
+                        balanceEl.textContent = currentUser.balance.toLocaleString('ru-RU');
+                        balanceEl.style.display = 'flex';
+                    }
                 }
+            } else {
+                // Скрываем баланс если не авторизован
+                balanceEl.style.display = 'none';
             }
         }
 

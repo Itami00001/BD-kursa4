@@ -407,9 +407,38 @@ function loadTransactionsModal() {
         modal.id = 'transactionsModal';
         modal.className = 'modal';
         modal.innerHTML = `
-            <div class="modal-content" style="max-width: 700px; max-height: 80vh; overflow-y: auto;">
+            <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
                 <span class="close" onclick="closeTransactionsModal()">&times;</span>
-                <h2 style="color: var(--accent-color); margin-bottom: 1.5rem;">💳 История транзакций</h2>
+                <h2 style="color: var(--accent-color); margin-bottom: 1.5rem;">💳 Транзакции COIN</h2>
+                
+                <!-- Send COIN Form -->
+                <div id="sendCoinForm" style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem; color: #00b894;">📤 Отправить COIN</h3>
+                    <div id="sendFormContent">
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: #aaa;">Выберите пользователя:</label>
+                            <select id="recipientSelect" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 5px;">
+                                <option value="">-- Загрузка пользователей... --</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: #aaa;">Введите количество COIN:</label>
+                            <input type="number" id="sendAmount" min="1" placeholder="Например: 100" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 5px;">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: #aaa;">Сообщение (необязательно):</label>
+                            <input type="text" id="sendMessage" placeholder="Спасибо за помощь!" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 5px;">
+                        </div>
+                        <button onclick="sendCoins()" style="padding: 0.8rem 2rem; background: #00b894; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            🚀 Отправить COIN
+                        </button>
+                    </div>
+                    <p id="sendFormLoginMessage" style="display: none; color: #888; text-align: center;">
+                        Войдите в систему, чтобы отправлять COIN другим пользователям
+                    </p>
+                </div>
+                
+                <h3 style="margin-bottom: 1rem; color: var(--accent-color);">📜 История транзакций</h3>
                 <div id="transactionsList">
                     <p style="text-align: center; color: #888;">Загрузка...</p>
                 </div>
@@ -425,6 +454,7 @@ function loadTransactionsModal() {
     }
     
     modal.style.display = 'block';
+    loadCustomersList();
     loadTransactionsList();
 }
 
@@ -436,50 +466,170 @@ function closeTransactionsModal() {
     }
 }
 
-// Load transactions list (demo implementation)
+// Load customers list for dropdown
+async function loadCustomersList() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const sendFormContent = document.getElementById('sendFormContent');
+    const sendFormLoginMessage = document.getElementById('sendFormLoginMessage');
+    
+    if (!currentUser.id) {
+        if (sendFormContent) sendFormContent.style.display = 'none';
+        if (sendFormLoginMessage) sendFormLoginMessage.style.display = 'block';
+        return;
+    }
+    
+    if (sendFormContent) sendFormContent.style.display = 'block';
+    if (sendFormLoginMessage) sendFormLoginMessage.style.display = 'none';
+    
+    const select = document.getElementById('recipientSelect');
+    if (!select) return;
+    
+    try {
+        const response = await fetch('/api/users/list');
+        const result = await response.json();
+        
+        if (result.success && result.customers) {
+            // Filter out current user
+            const otherCustomers = result.customers.filter(c => c.id != currentUser.id);
+            
+            if (otherCustomers.length === 0) {
+                select.innerHTML = '<option value="">-- Нет других пользователей --</option>';
+                return;
+            }
+            
+            select.innerHTML = '<option value="">-- Выберите пользователя --</option>' +
+                otherCustomers.map(c => 
+                    `<option value="${c.id}">${escapeHtml(c.fullname)} (${escapeHtml(c.email)})</option>`
+                ).join('');
+        } else {
+            select.innerHTML = '<option value="">-- Ошибка загрузки --</option>';
+        }
+    } catch (error) {
+        console.error('Error loading customers:', error);
+        select.innerHTML = '<option value="">-- Ошибка загрузки --</option>';
+    }
+}
+
+// Send COIN to another user
+async function sendCoins() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    if (!currentUser.id) {
+        alert('Пожалуйста, войдите в систему');
+        return;
+    }
+    
+    const recipientId = document.getElementById('recipientSelect').value;
+    const amount = parseInt(document.getElementById('sendAmount').value);
+    const message = document.getElementById('sendMessage').value.trim();
+    
+    if (!recipientId) {
+        alert('Пожалуйста, выберите получателя');
+        return;
+    }
+    
+    if (!amount || amount <= 0) {
+        alert('Пожалуйста, введите корректное количество COIN');
+        return;
+    }
+    
+    if (!confirm(`Отправить ${amount} COIN выбранному пользователю?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/transactions/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                senderId: currentUser.id,
+                recipientId: recipientId,
+                amount: amount,
+                message: message
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(`✅ ${result.message}\n\nВаш новый баланс: ${result.remainingBalance} COIN`);
+            // Clear form
+            document.getElementById('recipientSelect').value = '';
+            document.getElementById('sendAmount').value = '';
+            document.getElementById('sendMessage').value = '';
+            // Reload data
+            loadTransactionsList();
+            loadUserBalance();
+            // Update localStorage balance
+            currentUser.balance = result.remainingBalance;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        } else {
+            alert('❌ Ошибка: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error sending COIN:', error);
+        alert('Ошибка при отправке COIN: ' + error.message);
+    }
+}
+
+// Load transactions list
 async function loadTransactionsList() {
     const list = document.getElementById('transactionsList');
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     
-    // Demo transactions for all users
-    const demoTransactions = [
-        { date: new Date(), type: '💰 Начисление', amount: '+1000', desc: 'Стартовый бонус', color: '#00b894' },
-        { date: new Date(Date.now() - 86400000), type: '📰 Новости', amount: '-1500', desc: 'Создание premium новости', color: '#e74c3c' },
-        { date: new Date(Date.now() - 172800000), type: '📰 Новости', amount: '-500', desc: 'Classic оформление новости', color: '#e74c3c' }
-    ];
-    
-    let rows = demoTransactions.map(t => `
-        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-            <td style="padding: 0.8rem;">${t.date.toLocaleDateString('ru-RU')}</td>
-            <td style="padding: 0.8rem;">${t.type}</td>
-            <td style="padding: 0.8rem; text-align: right; color: ${t.color};">${t.amount} COIN</td>
-            <td style="padding: 0.8rem;">${t.desc}</td>
-        </tr>
-    `).join('');
-    
-    if (currentUser.id) {
-        rows += `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,215,0,0.1);">
-                <td style="padding: 0.8rem;" colspan="4" style="text-align: center; color: #FFD700;">
-                    👤 Ваши персональные транзакции будут отображаться здесь
-                </td>
-            </tr>
-        `;
+    if (!currentUser.id) {
+        list.innerHTML = '<p style="text-align: center; color: #888;">Войдите, чтобы увидеть свои транзакции</p>';
+        return;
     }
     
-    list.innerHTML = `
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="background: rgba(255,255,255,0.1);">
-                    <th style="padding: 0.8rem; text-align: left;">Дата</th>
-                    <th style="padding: 0.8rem; text-align: left;">Тип</th>
-                    <th style="padding: 0.8rem; text-align: right;">Сумма</th>
-                    <th style="padding: 0.8rem; text-align: left;">Описание</th>
+    try {
+        const response = await fetch(`/api/transactions/${currentUser.id}`);
+        const result = await response.json();
+        
+        if (!result.success) {
+            list.innerHTML = '<p style="text-align: center; color: #888;">Ошибка загрузки транзакций</p>';
+            return;
+        }
+        
+        if (!result.transactions || result.transactions.length === 0) {
+            list.innerHTML = '<p style="text-align: center; color: #888;">У вас пока нет транзакций</p>';
+            return;
+        }
+        
+        const rows = result.transactions.map(t => {
+            const date = new Date(t.created_at).toLocaleString('ru-RU');
+            const isSent = t.type === 'sent';
+            const color = isSent ? '#e74c3c' : '#00b894';
+            const sign = isSent ? '-' : '+';
+            const typeLabel = isSent ? '📤 Отправлено' : '📥 Получено';
+            const otherParty = isSent ? `→ ${escapeHtml(t.recipient_name)}` : `← ${escapeHtml(t.sender_name)}`;
+            
+            return `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 0.8rem; font-size: 0.85rem;">${date}</td>
+                    <td style="padding: 0.8rem;">${typeLabel} ${otherParty}</td>
+                    <td style="padding: 0.8rem; text-align: right; color: ${color}; font-weight: bold;">${sign}${t.amount} COIN</td>
+                    <td style="padding: 0.8rem; color: #888; font-size: 0.9rem;">${escapeHtml(t.message || '-')}</td>
                 </tr>
-            </thead>
-            <tbody>
-                ${rows}
-            </tbody>
-        </table>
-    `;
+            `;
+        }).join('');
+        
+        list.innerHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: rgba(255,255,255,0.1);">
+                        <th style="padding: 0.8rem; text-align: left;">Дата</th>
+                        <th style="padding: 0.8rem; text-align: left;">Тип</th>
+                        <th style="padding: 0.8rem; text-align: right;">Сумма</th>
+                        <th style="padding: 0.8rem; text-align: left;">Сообщение</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+        `;
+    } catch (error) {
+        console.error('Error loading transactions:', error);
+        list.innerHTML = '<p style="text-align: center; color: #888;">Ошибка загрузки транзакций</p>';
+    }
 }

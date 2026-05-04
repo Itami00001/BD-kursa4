@@ -228,6 +228,40 @@ nav {
   box-shadow: 0 6px 20px rgba(0, 184, 148, 0.6);
 }
 
+/* Единый стиль для всех кнопок навбара */
+.btn-nav {
+  background: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(220, 88, 109, 0.3);
+  white-space: nowrap;
+}
+
+.btn-nav:hover {
+  background: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 88, 109, 0.5);
+}
+
+/* Admin меню */
+.admin-menu {
+  position: relative;
+}
+
+.admin-dropdown {
+  display: none;
+}
+
+.admin-dropdown a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* Модальное окно авторизации */
 .modal {
   display: none;
