@@ -367,11 +367,6 @@
 
         // Открыть модальное окно транзакций
         function openTransactionsModal() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-            if (!currentUser.id) {
-                alert('Пожалуйста, войдите в систему');
-                return;
-            }
             if (typeof loadTransactionsModal === 'function') {
                 loadTransactionsModal();
             } else {

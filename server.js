@@ -106,7 +106,7 @@ app.get("/api/configurations/cars/:country", async (req, res) => {
     const db = require("./app/models");
     const countryParam = String(req.params.country || "").trim().toLowerCase();
 
-    const [cars] = await db.sequelize.query(`
+    const cars = await db.sequelize.query(`
       SELECT 
         c.id,
         c.brand,
