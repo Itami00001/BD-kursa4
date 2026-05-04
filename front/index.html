@@ -387,27 +387,46 @@
             }
         }
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            // Проверка учетных данных (заглушка для демонстрации)
+            // Проверка учетных данных
             if ((email === 'admin' && password === 'adminadmin') || 
                 (email === 'test' && password === 'testtest')) {
-                const userData = {
-                    id: email === 'admin' ? 1 : 2,
-                    fullname: email === 'admin' ? 'Администратор' : 'Тестовый Пользователь',
-                    email: email,
-                    balance: 5000
-                };
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                alert('Вы вошли в аккаунт!');
-                closeAuthModal();
-                updateAuthButton();
-                loadUserBalance();
+                
+                try {
+                    // Найти пользователя в БД по email или fullname
+                    const response = await fetch(`/api/customers`);
+                    const customers = await response.json();
+                    const dbUser = customers.find(c => 
+                        c.email === email || 
+                        c.email?.startsWith(email + '@') ||
+                        c.fullname?.toLowerCase() === email.toLowerCase()
+                    );
+                    
+                    if (dbUser) {
+                        const userData = {
+                            id: dbUser.id,
+                            fullname: dbUser.fullname || email,
+                            email: dbUser.email,
+                            balance: dbUser.balance || 0
+                        };
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('userEmail', email);
+                        localStorage.setItem('currentUser', JSON.stringify(userData));
+                        alert('Вы вошли в аккаунт!');
+                        closeAuthModal();
+                        updateAuthButton();
+                        loadUserBalance();
+                    } else {
+                        alert('Пользователь не найден в базе данных');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    alert('Ошибка входа: ' + error.message);
+                }
             } else {
                 alert('Неверный email или пароль');
             }
@@ -489,9 +508,10 @@
 
         function updateAuthButton() {
             const button = document.getElementById('authButton');
-            const swaggerLink = document.getElementById('swaggerLink');
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const userEmail = localStorage.getItem('userEmail');
+            
+            if (!button) return; // Защита от ошибки
             
             if (isLoggedIn) {
                 button.textContent = 'Выход';

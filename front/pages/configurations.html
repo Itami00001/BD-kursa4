@@ -266,19 +266,46 @@
             }
         }
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            // Проверка учетных данных (заглушка для демонстрации)
+            // Проверка учетных данных
             if ((email === 'admin' && password === 'adminadmin') || 
                 (email === 'test' && password === 'testtest')) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                alert('Вы вошли в аккаунт!');
-                closeAuthModal();
-                updateAuthButton();
+                
+                try {
+                    // Найти пользователя в БД по email или fullname
+                    const response = await fetch(`/api/customers`);
+                    const customers = await response.json();
+                    const dbUser = customers.find(c => 
+                        c.email === email || 
+                        c.email?.startsWith(email + '@') ||
+                        c.fullname?.toLowerCase() === email.toLowerCase()
+                    );
+                    
+                    if (dbUser) {
+                        const userData = {
+                            id: dbUser.id,
+                            fullname: dbUser.fullname || email,
+                            email: dbUser.email,
+                            balance: dbUser.balance || 0
+                        };
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('userEmail', email);
+                        localStorage.setItem('currentUser', JSON.stringify(userData));
+                        alert('Вы вошли в аккаунт!');
+                        closeAuthModal();
+                        updateAuthButton();
+                        loadUserBalance();
+                    } else {
+                        alert('Пользователь не найден в базе данных');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    alert('Ошибка входа: ' + error.message);
+                }
             } else {
                 alert('Неверный email или пароль');
             }
@@ -318,20 +345,26 @@
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const userEmail = localStorage.getItem('userEmail');
             
+            if (!button) return; // Защита от ошибки
+            
             if (isLoggedIn) {
                 button.textContent = 'Выход';
                 button.style.background = 'var(--color-4)';
                 
-                // Показать Swagger только для admin
-                if (userEmail === 'admin') {
-                    swaggerLink.style.display = 'inline-block';
-                } else {
-                    swaggerLink.style.display = 'none';
+                // Показать Swagger только для admin (если элемент существует)
+                if (swaggerLink) {
+                    if (userEmail === 'admin') {
+                        swaggerLink.style.display = 'inline-block';
+                    } else {
+                        swaggerLink.style.display = 'none';
+                    }
                 }
             } else {
                 button.textContent = 'Вход';
                 button.style.background = 'var(--primary-color)';
-                swaggerLink.style.display = 'none';
+                if (swaggerLink) {
+                    swaggerLink.style.display = 'none';
+                }
             }
             
             // Показать/скрыть Admin меню
