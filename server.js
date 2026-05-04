@@ -819,15 +819,20 @@ app.post("/api/news", async (req, res) => {
       { replacements: { cost: totalCost, userId }, type: db.sequelize.QueryTypes.UPDATE }
     );
     
-    // Создаем новость
-    const [newNews] = await db.sequelize.query(`
+    // Создаем новость и получаем id
+    const newsResult = await db.sequelize.query(`
       INSERT INTO news (title, content, author, author_id, style, status, views)
       VALUES (:title, :content, :author, :userId, :style, 'active', 0)
-      RETURNING *
+      RETURNING id
     `, {
       replacements: { title, content, author: author || user.fullname, userId, style },
-      type: db.sequelize.QueryTypes.INSERT
+      type: db.sequelize.QueryTypes.SELECT
     });
+    
+    const newsId = newsResult[0]?.id;
+    if (!newsId) {
+      throw new Error('Failed to create news - no ID returned');
+    }
     
     // Записываем платеж
     await db.sequelize.query(`
@@ -835,7 +840,7 @@ app.post("/api/news", async (req, res) => {
       VALUES (:newsId, :userId, :amount, :baseCost, :styleCost)
     `, {
       replacements: { 
-        newsId: newNews.id, 
+        newsId, 
         userId, 
         amount: totalCost, 
         baseCost, 
@@ -846,7 +851,7 @@ app.post("/api/news", async (req, res) => {
     
     res.json({ 
       success: true, 
-      news: newNews,
+      news: { id: newsId, title, content, author: author || user.fullname, style },
       cost: totalCost,
       remainingBalance: user.balance - totalCost
     });
