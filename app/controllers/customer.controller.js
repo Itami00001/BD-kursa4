@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create a new customer
 exports.create = (req, res) => {
-  if (!req.body.fullName || !req.body.email) {
+  if (!req.body.fullname && !req.body.fullName && !req.body.name) {
     res.status(400).send({
       message: "Full name and email can not be empty!"
     });
@@ -12,9 +12,10 @@ exports.create = (req, res) => {
   }
 
   const customer = {
-    fullName: req.body.fullName,
+    fullname: req.body.fullname || req.body.fullName || req.body.name,
     phone: req.body.phone,
-    email: req.body.email
+    email: req.body.email,
+    balance: req.body.balance || 0
   };
 
   Customer.create(customer)

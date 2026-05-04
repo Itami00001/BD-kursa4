@@ -1,20 +1,25 @@
-const { parts, categories, manufacturers, compatibility, cars } = require("../models");
+const db = require("../models");
+const { parts, categories, manufacturers, compatibility, cars } = db;
 
 class PartService {
   // Получить все детали
   async getAllParts() {
     try {
-      const result = await parts.findAll({
-        include: [
-          { model: categories },
-          { model: manufacturers },
-          {
-            model: compatibility,
-            include: [cars]
-          }
-        ]
+      const query = `
+        SELECT 
+          p.*,
+          c.name as category_name,
+          m.name as manufacturer_name
+        FROM parts p
+        LEFT JOIN categories c ON p.categoryid = c.id
+        LEFT JOIN manufacturers m ON p.manufacturerid = m.id
+      `;
+      
+      const results = await parts.sequelize.query(query, {
+        type: parts.sequelize.QueryTypes.SELECT
       });
-      return result;
+      
+      return results || [];
     } catch (error) {
       throw new Error(`Error fetching parts: ${error.message}`);
     }
@@ -140,16 +145,13 @@ class PartService {
         SELECT 
           p.*,
           c.name as category_name,
-          m.name as manufacturer_name,
-          comp.compatibilityScore,
-          comp.installDifficulty,
-          comp.instruction
+          m.name as manufacturer_name
         FROM parts p
-        JOIN categories c ON p.categoryId = c.id
-        JOIN manufacturers m ON p.manufacturerId = m.id
-        JOIN compatibility comp ON p.id = comp.partId
-        WHERE comp.carId = :carId
-        ORDER BY ${sortBy} ${sortOrder}
+        JOIN categories c ON p.categoryid = c.id
+        JOIN manufacturers m ON p.manufacturerid = m.id
+        JOIN compatibility comp ON p.id = comp.partid
+        WHERE comp.carid = :carId
+        ORDER BY p.${sortBy} ${sortOrder}
         ${limit ? 'LIMIT :limit' : ''}
       `;
       
@@ -158,7 +160,7 @@ class PartService {
         replacements.limit = parseInt(limit);
       }
       
-      const [results] = await parts.sequelize.query(query, {
+      const results = await parts.sequelize.query(query, {
         replacements,
         type: parts.sequelize.QueryTypes.SELECT
       });

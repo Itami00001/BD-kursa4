@@ -1,44 +1,59 @@
 module.exports = (sequelize, Sequelize) => {
-  const Car = sequelize.define("car", {
+  const Car = sequelize.define("cars", {
     brand: {
       type: Sequelize.STRING(100),
-      allowNull: false
+      allowNull: false,
+      field: 'brand'
     },
     model: {
       type: Sequelize.STRING(100),
-      allowNull: false
+      allowNull: false,
+      field: 'model'
     },
     year: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
+      field: 'year'
     },
     country: {
       type: Sequelize.STRING(50),
-      defaultValue: 'unknown'
+      defaultValue: 'unknown',
+      field: 'country'
     },
     description: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
+      field: 'description'
     },
     image: {
       type: Sequelize.STRING(10),
-      defaultValue: '🚗'
+      defaultValue: '🚗',
+      field: 'image'
     },
     power: {
-      type: Sequelize.STRING(50)
+      type: Sequelize.STRING(50),
+      field: 'power'
     },
     torque: {
-      type: Sequelize.STRING(50)
+      type: Sequelize.STRING(50),
+      field: 'torque'
     },
     acceleration: {
-      type: Sequelize.STRING(50)
+      type: Sequelize.STRING(50),
+      field: 'acceleration'
     },
     topSpeed: {
-      type: Sequelize.STRING(50)
+      type: Sequelize.STRING(50),
+      field: 'topSpeed'
     },
     compatibilityRating: {
       type: Sequelize.DECIMAL(3, 1),
-      defaultValue: 0
+      defaultValue: 0,
+      field: 'compatibilityRating'
     }
+  }, {
+    underscored: false,
+    freezeTableName: true,
+    timestamps: false
   });
 
   return Car;

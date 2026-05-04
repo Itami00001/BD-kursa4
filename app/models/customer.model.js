@@ -5,17 +5,29 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    fullName: {
+    fullname: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
+      field: 'fullname'
     },
     phone: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      field: 'phone'
     },
     email: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
+      field: 'email'
+    },
+    balance: {
+      type: Sequelize.INTEGER,
+      defaultValue: 0,
+      field: 'balance'
     }
+  }, {
+    underscored: true,
+    freezeTableName: true,
+    timestamps: false
   });
 
   return Customer;

@@ -1,16 +1,12 @@
-const { cars, compatibility, parts } = require("../models");
+const db = require("../models");
+const { cars, compatibility, parts } = db;
 
 class CarService {
   // Получить все автомобили
   async getAllCars() {
     try {
       const result = await cars.findAll({
-        include: [
-          {
-            model: compatibility,
-            include: [parts]
-          }
-        ]
+        raw: true
       });
       return result;
     } catch (error) {
@@ -21,14 +17,7 @@ class CarService {
   // Получить автомобиль по ID
   async getCarById(id) {
     try {
-      const car = await cars.findByPk(id, {
-        include: [
-          {
-            model: compatibility,
-            include: [parts]
-          }
-        ]
-      });
+      const car = await cars.findByPk(id);
       
       if (!car) {
         throw new Error('Car not found');
@@ -100,12 +89,7 @@ class CarService {
     try {
       const result = await cars.findAll({
         where: { country },
-        include: [
-          {
-            model: compatibility,
-            include: [parts]
-          }
-        ]
+        raw: true
       });
       
       return result;
@@ -139,12 +123,7 @@ class CarService {
         where: {
           brand: { [cars.sequelize.Op.like]: `%${brand}%` }
         },
-        include: [
-          {
-            model: compatibility,
-            include: [parts]
-          }
-        ]
+        raw: true
       });
       
       return result;

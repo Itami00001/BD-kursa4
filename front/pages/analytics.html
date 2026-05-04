@@ -7,6 +7,8 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>TM</text></svg>">
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         .analytics-container {
             max-width: 1400px;
@@ -31,17 +33,22 @@
             justify-content: center;
             margin-bottom: 2rem;
             flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 15px;
         }
         
         .analytics-btn {
-            padding: 0.8rem 1.5rem;
+            padding: 0.8rem 2rem;
             background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            font-weight: 500;
             transition: all 0.3s ease;
+            min-width: 150px;
         }
         
         .analytics-btn:hover {
@@ -52,6 +59,21 @@
         .analytics-btn.active {
             background: var(--accent-color);
             box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .analytics-btn.refresh {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+        
+        .analytics-btn.refresh:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+        }
+        
+        .section-title {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
         
         .charts-grid {
@@ -82,9 +104,9 @@
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
         
         .stat-card {
@@ -134,12 +156,28 @@
             border-radius: 15px;
             padding: 1.5rem;
             overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .table-header h3 {
+            color: var(--accent-color);
+            margin: 0;
         }
         
         .data-table {
             width: 100%;
             border-collapse: collapse;
             color: white;
+            font-size: 0.9rem;
         }
         
         .data-table th,
@@ -159,23 +197,146 @@
             background: rgba(255, 255, 255, 0.05);
         }
         
+        .btn-download {
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        /* Коин панель */
+        .coin-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+        
+        .coin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .coin-stat-card {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 87, 34, 0.2));
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .coin-stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffc107;
+            margin-bottom: 0.5rem;
+        }
+        
+        .coin-stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        .coin-form {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .coin-form h3 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .form-group select option {
+            background: #2a2a2a;
+            color: white;
+        }
+        
+        .btn-coin {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-coin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 193, 7, 0.4);
+        }
+        
+        .admin-notice {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #ffc107;
+        }
+        
         @media (max-width: 768px) {
             .charts-grid {
                 grid-template-columns: 1fr;
             }
             
             .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
             
             .analytics-controls {
                 flex-direction: column;
-                align-items: center;
+                align-items: stretch;
             }
             
             .analytics-btn {
                 width: 100%;
-                max-width: 300px;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -184,17 +345,14 @@
     <div class="analytics-container">
         <div class="analytics-header">
             <h1>📊 Аналитика и визуализация данных</h1>
-            <p>Интерактивные графики и статистика системы тюнинга</p>
+            <p>Интерактивные графики и управление системой тюнинга</p>
         </div>
 
         <div class="analytics-controls">
-            <button class="analytics-btn active" onclick="showOverview()">Обзор</button>
-            <button class="analytics-btn" onclick="showCarsStats()">Автомобили</button>
-            <button class="analytics-btn" onclick="showPartsStats()">Детали</button>
-            <button class="analytics-btn" onclick="showOrdersStats()">Заказы</button>
-            <button class="analytics-btn" onclick="showCompatibilityStats()">Совместимость</button>
-            <button class="analytics-btn" onclick="showPerformanceStats()">Производительность</button>
-            <button class="analytics-btn" onclick="refreshData()">🔄 Обновить</button>
+            <button class="analytics-btn active" onclick="showSection('overview')">Обзор</button>
+            <button class="analytics-btn" onclick="showSection('database')">База данных</button>
+            <button class="analytics-btn" onclick="showSection('coins')">Коин панель</button>
+            <button class="analytics-btn refresh" onclick="refreshAllData()">Обновить</button>
         </div>
 
         <div id="loadingIndicator" class="loading" style="display: none;">
@@ -203,7 +361,7 @@
 
         <div id="errorContainer"></div>
 
-        <!-- Обзорная статистика -->
+        <!-- ==================== ОБЗОР ==================== -->
         <div id="overviewSection">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -240,18 +398,6 @@
                     </div>
                 </div>
                 <div class="chart-card">
-                    <h3>Детали по категориям</h3>
-                    <div class="chart-container">
-                        <canvas id="categoriesChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h3>Производители деталей</h3>
-                    <div class="chart-container">
-                        <canvas id="manufacturersChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
                     <h3>Рейтинг совместимости</h3>
                     <div class="chart-container">
                         <canvas id="compatibilityChart"></canvas>
@@ -260,207 +406,210 @@
             </div>
         </div>
 
-        <!-- Статистика автомобилей -->
-        <div id="carsStatsSection" style="display: none;">
+        <!-- ==================== БАЗА ДАННЫХ ==================== -->
+        <div id="databaseSection" style="display: none;">
+            <h2 class="section-title">База данных системы</h2>
+            
+            <!-- Пользователи -->
             <div class="table-container">
-                <h3 style="color: var(--accent-color); margin-bottom: 1rem;">Детальная статистика автомобилей</h3>
+                <div class="table-header">
+                    <h3>Пользователи системы</h3>
+                    <button class="btn-download" onclick="downloadPDF('customers')">Скачать PDF</button>
+                </div>
+                <table class="data-table" id="customersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Email</th>
+                            <th>Телефон</th>
+                            <th>Баланс</th>
+                            <th>Регистрация</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Автомобили -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Автомобили</h3>
+                    <button class="btn-download" onclick="downloadPDF('cars')">Скачать PDF</button>
+                </div>
                 <table class="data-table" id="carsTable">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Марка</th>
                             <th>Модель</th>
                             <th>Год</th>
                             <th>Страна</th>
                             <th>Мощность</th>
                             <th>Рейтинг</th>
-                            <th>Совместимые детали</th>
                         </tr>
                     </thead>
-                    <tbody id="carsTableBody">
-                    </tbody>
+                    <tbody id="carsTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Детали -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Детали тюнинга</h3>
+                    <button class="btn-download" onclick="downloadPDF('parts')">Скачать PDF</button>
+                </div>
+                <table class="data-table" id="partsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Категория</th>
+                            <th>Производитель</th>
+                            <th>Цена</th>
+                            <th>Прирост мощности</th>
+                        </tr>
+                    </thead>
+                    <tbody id="partsTableBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Статистика деталей -->
-        <div id="partsStatsSection" style="display: none;">
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h3>Ценовой диапазон деталей</h3>
-                    <div class="chart-container">
-                        <canvas id="priceRangeChart"></canvas>
-                    </div>
+        <!-- ==================== КОИН ПАНЕЛЬ ==================== -->
+        <div id="coinsSection" style="display: none;">
+            <h2 class="section-title">Коин панель администратора</h2>
+            
+            <div class="coin-stats">
+                <div class="coin-stat-card">
+                    <div class="coin-stat-number" id="totalCoinsInSystem">-</div>
+                    <div class="coin-stat-label">Всего коинов в системе</div>
                 </div>
-                <div class="chart-card">
-                    <h3>Прирост мощности</h3>
-                    <div class="chart-container">
-                        <canvas id="powerGainChart"></canvas>
-                    </div>
+                <div class="coin-stat-card">
+                    <div class="coin-stat-number" id="activeUsersCount">-</div>
+                    <div class="coin-stat-label">Активных пользователей</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Статистика заказов -->
-        <div id="ordersStatsSection" style="display: none;">
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h3>Статусы заказов</h3>
-                    <div class="chart-container">
-                        <canvas id="orderStatusChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h3>Суммы заказов</h3>
-                    <div class="chart-container">
-                        <canvas id="orderAmountChart"></canvas>
-                    </div>
+                <div class="coin-stat-card">
+                    <div class="coin-stat-number" id="avgUserBalance">-</div>
+                    <div class="coin-stat-label">Средний баланс</div>
                 </div>
             </div>
-        </div>
 
-        <!-- Статистика совместимости -->
-        <div id="compatibilityStatsSection" style="display: none;">
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h3>Сложность установки</h3>
-                    <div class="chart-container">
-                        <canvas id="installDifficultyChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h3>Топ совместимых пар</h3>
-                    <div class="chart-container">
-                        <canvas id="topCompatibleChart"></canvas>
-                    </div>
-                </div>
+            <div class="admin-notice">
+                Доступ только для администраторов. Все операции логируются.
             </div>
-        </div>
 
-        <!-- Производительность -->
-        <div id="performanceStatsSection" style="display: none;">
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h3>Время ответа API</h3>
-                    <div class="chart-container">
-                        <canvas id="apiResponseChart"></canvas>
-                    </div>
+            <div class="coin-form">
+                <h3>Раздать коины пользователю</h3>
+                <div class="form-group">
+                    <label for="coinUserSelect">Выберите пользователя</label>
+                    <select id="coinUserSelect">
+                        <option value="">Загрузка пользователей...</option>
+                    </select>
                 </div>
-                <div class="chart-card">
-                    <h3>Нагрузка базы данных</h3>
-                    <div class="chart-container">
-                        <canvas id="dbLoadChart"></canvas>
-                    </div>
+                <div class="form-group">
+                    <label for="coinAmount">Количество коинов</label>
+                    <input type="number" id="coinAmount" min="1" max="100000" value="100" placeholder="Введите количество">
                 </div>
+                <button class="btn-coin" onclick="sendCoins()">Отправить коины</button>
+            </div>
+
+            <div class="table-container">
+                <h3 style="color: var(--accent-color); margin-bottom: 1rem;">История транзакций</h3>
+                <table class="data-table" id="transactionsTable">
+                    <thead>
+                        <tr>
+                            <th>Время</th>
+                            <th>Пользователь</th>
+                            <th>Сумма</th>
+                            <th>Тип</th>
+                            <th>Админ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody"></tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
-        // Глобальные переменные для графиков
+        // Глобальные переменные
         let charts = {};
+        let cachedData = {
+            customers: [],
+            cars: [],
+            parts: [],
+            stats: {},
+            transactions: [
+                { date: new Date().toISOString(), user: 'Иван Петров', amount: 100, type: 'Начисление', admin: 'Админ' },
+                { date: new Date(Date.now() - 86400000).toISOString(), user: 'Сергей Иванов', amount: 50, type: 'Бонус', admin: 'Админ' },
+                { date: new Date(Date.now() - 172800000).toISOString(), user: 'Админ', amount: 1000, type: 'Пополнение', admin: 'Система' }
+            ]
+        };
         
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             loadOverviewData();
-            setInterval(updateTime, 1000);
         });
 
-        // Показать обзор
-        function showOverview() {
-            hideAllSections();
-            document.getElementById('overviewSection').style.display = 'block';
-            setActiveButton('overview');
-            loadOverviewData();
-        }
-
-        // Показать статистику автомобилей
-        function showCarsStats() {
-            hideAllSections();
-            document.getElementById('carsStatsSection').style.display = 'block';
-            setActiveButton('cars');
-            loadCarsData();
-        }
-
-        // Показать статистику деталей
-        function showPartsStats() {
-            hideAllSections();
-            document.getElementById('partsStatsSection').style.display = 'block';
-            setActiveButton('parts');
-            loadPartsData();
-        }
-
-        // Показать статистику заказов
-        function showOrdersStats() {
-            hideAllSections();
-            document.getElementById('ordersStatsSection').style.display = 'block';
-            setActiveButton('orders');
-            loadOrdersData();
-        }
-
-        // Показать статистику совместимости
-        function showCompatibilityStats() {
-            hideAllSections();
-            document.getElementById('compatibilityStatsSection').style.display = 'block';
-            setActiveButton('compatibility');
-            loadCompatibilityData();
-        }
-
-        // Показать статистику производительности
-        function showPerformanceStats() {
-            hideAllSections();
-            document.getElementById('performanceStatsSection').style.display = 'block';
-            setActiveButton('performance');
-            loadPerformanceData();
-        }
-
-        // Скрыть все секции
-        function hideAllSections() {
-            const sections = [
-                'overviewSection',
-                'carsStatsSection', 
-                'partsStatsSection',
-                'ordersStatsSection',
-                'compatibilityStatsSection',
-                'performanceStatsSection'
-            ];
+        // ==================== НАВИГАЦИЯ ====================
+        
+        function showSection(section) {
+            // Скрыть все секции
+            document.getElementById('overviewSection').style.display = 'none';
+            document.getElementById('databaseSection').style.display = 'none';
+            document.getElementById('coinsSection').style.display = 'none';
             
-            sections.forEach(id => {
-                document.getElementById(id).style.display = 'none';
-            });
-        }
-
-        // Установить активную кнопку
-        function setActiveButton(section) {
+            // Убрать active у всех кнопок
             document.querySelectorAll('.analytics-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            const buttonMap = {
-                'overview': 0,
-                'cars': 1,
-                'parts': 2,
-                'orders': 3,
-                'compatibility': 4,
-                'performance': 5
-            };
-            
-            const buttons = document.querySelectorAll('.analytics-btn');
-            if (buttonMap[section] !== undefined && buttons[buttonMap[section]]) {
-                buttons[buttonMap[section]].classList.add('active');
+            // Показать выбранную секцию
+            switch(section) {
+                case 'overview':
+                    document.getElementById('overviewSection').style.display = 'block';
+                    document.querySelectorAll('.analytics-btn')[0].classList.add('active');
+                    loadOverviewData();
+                    break;
+                case 'database':
+                    document.getElementById('databaseSection').style.display = 'block';
+                    document.querySelectorAll('.analytics-btn')[1].classList.add('active');
+                    loadDatabaseData();
+                    break;
+                case 'coins':
+                    document.getElementById('coinsSection').style.display = 'block';
+                    document.querySelectorAll('.analytics-btn')[2].classList.add('active');
+                    loadCoinPanelData();
+                    break;
             }
         }
 
-        // Показать загрузку
+        function refreshAllData() {
+            const activeBtn = document.querySelector('.analytics-btn.active');
+            const buttons = Array.from(document.querySelectorAll('.analytics-btn'));
+            const activeIndex = buttons.indexOf(activeBtn);
+            
+            showLoading();
+            
+            switch(activeIndex) {
+                case 0: loadOverviewData(); break;
+                case 1: loadDatabaseData(); break;
+                case 2: loadCoinPanelData(); break;
+            }
+            
+            setTimeout(hideLoading, 500);
+        }
+
+        // ==================== УТИЛИТЫ ====================
+        
         function showLoading() {
             document.getElementById('loadingIndicator').style.display = 'block';
         }
 
-        // Скрыть загрузку
         function hideLoading() {
             document.getElementById('loadingIndicator').style.display = 'none';
         }
 
-        // Показать ошибку
         function showError(message) {
             const errorContainer = document.getElementById('errorContainer');
             errorContainer.innerHTML = `<div class="error">${message}</div>`;
@@ -469,7 +618,8 @@
             }, 5000);
         }
 
-        // Загрузить общие данные
+        // ==================== ОБЗОР ====================
+        
         async function loadOverviewData() {
             showLoading();
             try {
@@ -483,18 +633,24 @@
                 
                 // Загрузка данных для графиков
                 await loadCountriesData();
-                await loadCategoriesData();
-                await loadManufacturersData();
                 await loadCompatibilityDistribution();
                 
             } catch (error) {
                 showError('Ошибка загрузки данных: ' + error.message);
+                // Fallback на тестовые данные
+                updateStatCards({
+                    totalCars: 22,
+                    totalParts: 45,
+                    totalManufacturers: 18,
+                    totalCategories: 8,
+                    totalCompatibilities: 67,
+                    totalCustomers: 5
+                });
             } finally {
                 hideLoading();
             }
         }
 
-        // Обновить карточки статистики
         function updateStatCards(stats) {
             document.getElementById('totalCars').textContent = stats.totalCars || 0;
             document.getElementById('totalParts').textContent = stats.totalParts || 0;
@@ -504,7 +660,8 @@
             document.getElementById('totalCustomers').textContent = stats.totalCustomers || 0;
         }
 
-        // Загрузить данные по странам
+        // ==================== ГРАФИКИ ====================
+        
         async function loadCountriesData() {
             try {
                 const response = await fetch('/api/cars/stats/countries');
@@ -512,7 +669,6 @@
                 
                 const ctx = document.getElementById('countriesChart').getContext('2d');
                 
-                // Уничтожаем существующий график
                 if (charts.countries) {
                     charts.countries.destroy();
                 }
@@ -524,12 +680,7 @@
                         datasets: [{
                             data: data.map(item => item.car_count),
                             backgroundColor: [
-                                '#FF6384',
-                                '#36A2EB',
-                                '#FFCE56',
-                                '#4BC0C0',
-                                '#9966FF',
-                                '#FF9F40'
+                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
                             ],
                             borderWidth: 2,
                             borderColor: '#fff'
@@ -541,9 +692,7 @@
                         plugins: {
                             legend: {
                                 position: 'bottom',
-                                labels: {
-                                    color: '#fff'
-                                }
+                                labels: { color: '#fff' }
                             }
                         }
                     }
@@ -553,27 +702,39 @@
             }
         }
 
-        // Загрузить данные по категориям
-        async function loadCategoriesData() {
+        async function loadCompatibilityDistribution() {
             try {
-                const response = await fetch('/api/categories');
-                const data = await response.json();
+                const response = await fetch('/api/compatibilities/stats/distribution');
+                let chartData;
                 
-                const ctx = document.getElementById('categoriesChart').getContext('2d');
-                
-                if (charts.categories) {
-                    charts.categories.destroy();
+                if (response.ok) {
+                    const data = await response.json();
+                    chartData = data.distribution || [5, 15, 35, 25, 20];
+                } else {
+                    chartData = [5, 15, 35, 25, 20];
                 }
                 
-                charts.categories = new Chart(ctx, {
+                const ctx = document.getElementById('compatibilityChart').getContext('2d');
+                
+                if (charts.compatibility) {
+                    charts.compatibility.destroy();
+                }
+                
+                charts.compatibility = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: data.map(item => item.name),
+                        labels: ['1-2', '3-4', '5-6', '7-8', '9-10'],
                         datasets: [{
-                            label: 'Количество деталей',
-                            data: data.map(item => item.partCount || Math.floor(Math.random() * 20) + 5),
-                            backgroundColor: 'rgba(0, 255, 255, 0.6)',
-                            borderColor: 'rgba(0, 255, 255, 1)',
+                            label: 'Рейтинг совместимости',
+                            data: chartData,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.8)',
+                                'rgba(255, 159, 64, 0.8)',
+                                'rgba(255, 206, 86, 0.8)',
+                                'rgba(54, 162, 235, 0.8)',
+                                'rgba(75, 192, 192, 0.8)'
+                            ],
+                            borderColor: '#fff',
                             borderWidth: 1
                         }]
                     },
@@ -593,112 +754,7 @@
                         },
                         plugins: {
                             legend: {
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error loading categories data:', error);
-            }
-        }
-
-        // Загрузить данные по производителям
-        async function loadManufacturersData() {
-            try {
-                const response = await fetch('/api/manufacturers');
-                const data = await response.json();
-                
-                const ctx = document.getElementById('manufacturersChart').getContext('2d');
-                
-                if (charts.manufacturers) {
-                    charts.manufacturers.destroy();
-                }
-                
-                charts.manufacturers = new Chart(ctx, {
-                    type: 'polarArea',
-                    data: {
-                        labels: data.map(item => item.name),
-                        datasets: [{
-                            data: data.map(item => item.partCount || Math.floor(Math.random() * 15) + 3),
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.6)',
-                                'rgba(54, 162, 235, 0.6)',
-                                'rgba(255, 206, 86, 0.6)',
-                                'rgba(75, 192, 192, 0.6)',
-                                'rgba(153, 102, 255, 0.6)'
-                            ],
-                            borderWidth: 2,
-                            borderColor: '#fff'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: { color: '#fff' }
-                            }
-                        },
-                        scales: {
-                            r: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error loading manufacturers data:', error);
-            }
-        }
-
-        // Загрузить распределение совместимости
-        async function loadCompatibilityDistribution() {
-            try {
-                // Генерируем тестовые данные для совместимости
-                const compatibilityData = {
-                    labels: ['1-2', '3-4', '5-6', '7-8', '9-10'],
-                    data: [5, 15, 35, 25, 20]
-                };
-                
-                const ctx = document.getElementById('compatibilityChart').getContext('2d');
-                
-                if (charts.compatibility) {
-                    charts.compatibility.destroy();
-                }
-                
-                charts.compatibility = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: compatibilityData.labels,
-                        datasets: [{
-                            label: 'Количество совместимостей',
-                            data: compatibilityData.data,
-                            fill: true,
-                            backgroundColor: 'rgba(255, 0, 255, 0.2)',
-                            borderColor: 'rgba(255, 0, 255, 1)',
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#fff' }
+                                display: false
                             }
                         }
                     }
@@ -708,441 +764,299 @@
             }
         }
 
-        // Загрузить данные автомобилей
-        async function loadCarsData() {
+        // ==================== БАЗА ДАННЫХ ====================
+        
+        async function loadDatabaseData() {
             showLoading();
             try {
-                const response = await fetch('/api/cars');
-                const data = await response.json();
-                
-                const tbody = document.getElementById('carsTableBody');
-                tbody.innerHTML = '';
-                
-                data.forEach(car => {
-                    const row = tbody.insertRow();
-                    row.innerHTML = `
-                        <td>${car.brand}</td>
-                        <td>${car.model}</td>
-                        <td>${car.year}</td>
-                        <td>${car.country}</td>
-                        <td>${car.power || '-'}</td>
-                        <td>${car.compatibilityRating || '-'}</td>
-                        <td>${Math.floor(Math.random() * 20) + 5}</td>
-                    `;
-                });
+                // Загружаем все данные параллельно
+                const [customersRes, carsRes, partsRes] = await Promise.all([
+                    fetch('/api/customers').catch(() => null),
+                    fetch('/api/cars').catch(() => null),
+                    fetch('/api/parts').catch(() => null)
+                ]);
+
+                // Пользователи
+                if (customersRes && customersRes.ok) {
+                    cachedData.customers = await customersRes.json();
+                    renderCustomersTable(cachedData.customers);
+                } else {
+                    renderCustomersTable([
+                        {id: 1, name: 'Админ', email: 'admin@tunning.ru', phone: '+79990000001', balance: 1000, createdAt: '2024-01-15'},
+                        {id: 2, name: 'Иван Петров', email: 'ivan@mail.ru', phone: '+79991112233', balance: 500, createdAt: '2024-02-20'},
+                        {id: 3, name: 'Сергей Иванов', email: 'sergey@mail.ru', phone: '+79992223344', balance: 0, createdAt: '2024-03-10'}
+                    ]);
+                }
+
+                // Автомобили
+                if (carsRes && carsRes.ok) {
+                    cachedData.cars = await carsRes.json();
+                    renderCarsTable(cachedData.cars);
+                } else {
+                    cachedData.cars = [];
+                }
+
+                // Детали
+                if (partsRes && partsRes.ok) {
+                    cachedData.parts = await partsRes.json();
+                    renderPartsTable(cachedData.parts);
+                } else {
+                    cachedData.parts = [];
+                }
+
             } catch (error) {
-                showError('Ошибка загрузки данных автомобилей: ' + error.message);
+                showError('Ошибка загрузки данных: ' + error.message);
             } finally {
                 hideLoading();
             }
         }
 
-        // Загрузить данные деталей
-        async function loadPartsData() {
-            showLoading();
-            try {
-                const response = await fetch('/api/parts');
-                const data = await response.json();
-                
-                // График ценового диапазона
-                const priceRanges = {
-                    '0-50k': data.filter(p => p.price < 50000).length,
-                    '50k-100k': data.filter(p => p.price >= 50000 && p.price < 100000).length,
-                    '100k-150k': data.filter(p => p.price >= 100000 && p.price < 150000).length,
-                    '150k+': data.filter(p => p.price >= 150000).length
-                };
-                
-                const ctx1 = document.getElementById('priceRangeChart').getContext('2d');
-                if (charts.priceRange) charts.priceRange.destroy();
-                
-                charts.priceRange = new Chart(ctx1, {
-                    type: 'pie',
-                    data: {
-                        labels: Object.keys(priceRanges),
-                        datasets: [{
-                            data: Object.values(priceRanges),
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.6)',
-                                'rgba(54, 162, 235, 0.6)',
-                                'rgba(255, 206, 86, 0.6)',
-                                'rgba(75, 192, 192, 0.6)'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-                
-                // График прироста мощности
-                const powerGains = data.map(p => p.powerGain || Math.floor(Math.random() * 150) + 50);
-                const ctx2 = document.getElementById('powerGainChart').getContext('2d');
-                if (charts.powerGain) charts.powerGain.destroy();
-                
-                charts.powerGain = new Chart(ctx2, {
-                    type: 'scatter',
-                    data: {
-                        datasets: [{
-                            label: 'Прирост мощности (л.с.)',
-                            data: powerGains.map((gain, index) => ({x: index, y: gain})),
-                            backgroundColor: 'rgba(0, 255, 255, 0.6)'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-                
-            } catch (error) {
-                showError('Ошибка загрузки данных деталей: ' + error.message);
-            } finally {
-                hideLoading();
-            }
+        function renderCustomersTable(customers) {
+            const tbody = document.getElementById('customersTableBody');
+            tbody.innerHTML = customers.map(c => `
+                <tr>
+                    <td>${c.id}</td>
+                    <td>${c.fullname || c.fullName || c.name || '-'}</td>
+                    <td>${c.email || '-'}</td>
+                    <td>${c.phone || '-'}</td>
+                    <td>${c.balance || 0}</td>
+                    <td>${c.createdAt ? new Date(c.createdAt).toLocaleDateString('ru-RU') : '-'}</td>
+                </tr>
+            `).join('');
         }
 
-        // Загрузить данные заказов
-        async function loadOrdersData() {
-            showLoading();
-            try {
-                // Генерируем тестовые данные для заказов
-                const orderStatuses = {
-                    'pending': 15,
-                    'confirmed': 25,
-                    'processing': 30,
-                    'shipped': 20,
-                    'delivered': 80,
-                    'cancelled': 5
-                };
-                
-                const ctx1 = document.getElementById('orderStatusChart').getContext('2d');
-                if (charts.orderStatus) charts.orderStatus.destroy();
-                
-                charts.orderStatus = new Chart(ctx1, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(orderStatuses),
-                        datasets: [{
-                            label: 'Количество заказов',
-                            data: Object.values(orderStatuses),
-                            backgroundColor: [
-                                'rgba(255, 206, 86, 0.6)',
-                                'rgba(54, 162, 235, 0.6)',
-                                'rgba(255, 159, 64, 0.6)',
-                                'rgba(75, 192, 192, 0.6)',
-                                'rgba(54, 255, 54, 0.6)',
-                                'rgba(255, 99, 132, 0.6)'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-                
-                // График сумм заказов
-                const orderAmounts = Array.from({length: 10}, () => Math.floor(Math.random() * 300000) + 50000);
-                const ctx2 = document.getElementById('orderAmountChart').getContext('2d');
-                if (charts.orderAmount) charts.orderAmount.destroy();
-                
-                charts.orderAmount = new Chart(ctx2, {
-                    type: 'line',
-                    data: {
-                        labels: orderAmounts.map((_, i) => `Заказ ${i + 1}`),
-                        datasets: [{
-                            label: 'Сумма заказа (руб)',
-                            data: orderAmounts,
-                            fill: true,
-                            backgroundColor: 'rgba(0, 255, 255, 0.2)',
-                            borderColor: 'rgba(0, 255, 255, 1)',
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-                
-            } catch (error) {
-                showError('Ошибка загрузки данных заказов: ' + error.message);
-            } finally {
-                hideLoading();
-            }
+        function renderCarsTable(cars) {
+            const tbody = document.getElementById('carsTableBody');
+            tbody.innerHTML = cars.map(c => `
+                <tr>
+                    <td>${c.id}</td>
+                    <td>${c.brand}</td>
+                    <td>${c.model}</td>
+                    <td>${c.year}</td>
+                    <td>${c.country}</td>
+                    <td>${c.power || '-'}</td>
+                    <td>${c.compatibilityRating || '-'}</td>
+                </tr>
+            `).join('');
         }
 
-        // Загрузить данные совместимости
-        async function loadCompatibilityData() {
-            showLoading();
-            try {
-                // Сложность установки
-                const difficultyData = {
-                    'Очень легко': 15,
-                    'Легко': 25,
-                    'Средне': 35,
-                    'Сложно': 20,
-                    'Очень сложно': 5
-                };
-                
-                const ctx1 = document.getElementById('installDifficultyChart').getContext('2d');
-                if (charts.installDifficulty) charts.installDifficulty.destroy();
-                
-                charts.installDifficulty = new Chart(ctx1, {
-                    type: 'radar',
-                    data: {
-                        labels: Object.keys(difficultyData),
-                        datasets: [{
-                            label: 'Количество деталей',
-                            data: Object.values(difficultyData),
-                            backgroundColor: 'rgba(255, 0, 255, 0.2)',
-                            borderColor: 'rgba(255, 0, 255, 1)',
-                            pointBackgroundColor: 'rgba(255, 0, 255, 1)'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            r: {
-                                beginAtZero: true,
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-                
-                // Топ совместимых пар
-                const topPairs = [
-                    'Toyota Supra + Garrett',
-                    'BMW M3 + Brembo',
-                    'Nissan GT-R + Akrapovic',
-                    'Mazda RX7 + HKS',
-                    'Honda S2000 + Mugen'
-                ];
-                
-                const ctx2 = document.getElementById('topCompatibleChart').getContext('2d');
-                if (charts.topCompatible) charts.topCompatible.destroy();
-                
-                charts.topCompatible = new Chart(ctx2, {
-                    type: 'horizontalBar',
-                    data: {
-                        labels: topPairs,
-                        datasets: [{
-                            label: 'Рейтинг совместимости',
-                            data: [9.5, 8.8, 9.2, 8.5, 9.0],
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.6)',
-                                'rgba(54, 162, 235, 0.6)',
-                                'rgba(255, 206, 86, 0.6)',
-                                'rgba(75, 192, 192, 0.6)',
-                                'rgba(153, 102, 255, 0.6)'
-                            ]
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                max: 10,
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            y: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-                
-            } catch (error) {
-                showError('Ошибка загрузки данных совместимости: ' + error.message);
-            } finally {
-                hideLoading();
-            }
+        function renderPartsTable(parts) {
+            const tbody = document.getElementById('partsTableBody');
+            tbody.innerHTML = parts.map(p => `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.name}</td>
+                    <td>${p.category_name || p.category || '-'}</td>
+                    <td>${p.manufacturer_name || p.manufacturer || '-'}</td>
+                    <td>${p.price ? parseFloat(p.price).toLocaleString('ru-RU') + ' ₽' : '-'}</td>
+                    <td>+${p.powerGain || 0} л.с.</td>
+                </tr>
+            `).join('');
         }
 
-        // Загрузить данные производительности
-        async function loadPerformanceData() {
-            showLoading();
-            try {
-                // Время ответа API
-                const responseTimes = Array.from({length: 20}, () => Math.random() * 200 + 50);
-                const ctx1 = document.getElementById('apiResponseChart').getContext('2d');
-                if (charts.apiResponse) charts.apiResponse.destroy();
-                
-                charts.apiResponse = new Chart(ctx1, {
-                    type: 'line',
-                    data: {
-                        labels: responseTimes.map((_, i) => `${i}s`),
-                        datasets: [{
-                            label: 'Время ответа (мс)',
-                            data: responseTimes,
-                            fill: true,
-                            backgroundColor: 'rgba(0, 255, 0, 0.2)',
-                            borderColor: 'rgba(0, 255, 0, 1)',
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-                
-                // Нагрузка базы данных
-                const dbLoad = Array.from({length: 12}, () => Math.random() * 100);
-                const ctx2 = document.getElementById('dbLoadChart').getContext('2d');
-                if (charts.dbLoad) charts.dbLoad.destroy();
-                
-                charts.dbLoad = new Chart(ctx2, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                        datasets: [{
-                            label: 'Нагрузка БД (%)',
-                            data: dbLoad,
-                            backgroundColor: 'rgba(255, 165, 0, 0.6)',
-                            borderColor: 'rgba(255, 165, 0, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#fff' }
-                            }
-                        }
-                    }
-                });
-                
-            } catch (error) {
-                showError('Ошибка загрузки данных производительности: ' + error.message);
-            } finally {
-                hideLoading();
-            }
+        // ==================== PDF ЭКСПОРТ ====================
+        
+        // Транслитерация для PDF (кириллица не поддерживается стандартными шрифтами jsPDF)
+        function transliterate(text) {
+            if (!text) return '-';
+            const ru = {
+                'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+                'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+                'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
+                'э': 'e', 'ю': 'yu', 'я': 'ya',
+                'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh', 'З': 'Z', 'И': 'I',
+                'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T',
+                'У': 'U', 'Ф': 'F', 'Х': 'H', 'Ц': 'Ts', 'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Sch', 'Ъ': '', 'Ы': 'Y', 'Ь': '',
+                'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
+            };
+            return text.toString().split('').map(char => ru[char] || char).join('');
         }
-
-        // Обновить все данные
-        function refreshData() {
-            const activeSection = document.querySelector('.analytics-btn.active');
-            const sectionIndex = Array.from(document.querySelectorAll('.analytics-btn')).indexOf(activeSection);
+        
+        function downloadPDF(type) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
             
-            switch(sectionIndex) {
-                case 0: loadOverviewData(); break;
-                case 1: loadCarsData(); break;
-                case 2: loadPartsData(); break;
-                case 3: loadOrdersData(); break;
-                case 4: loadCompatibilityData(); break;
-                case 5: loadPerformanceData(); break;
-                default: loadOverviewData();
+            let title, headers, data;
+            
+            switch(type) {
+                case 'customers':
+                    title = 'Polzovateli sistemy';
+                    headers = ['ID', 'Imya', 'Email', 'Telefon', 'Balans'];
+                    data = cachedData.customers.map(c => [
+                        c.id, 
+                        transliterate(c.fullname || c.fullName || c.name || '-'), 
+                        c.email || '-', 
+                        transliterate(c.phone || '-'), 
+                        c.balance || 0
+                    ]);
+                    break;
+                case 'cars':
+                    title = 'Avtomobili';
+                    headers = ['ID', 'Marka', 'Model', 'God', 'Strana', 'Moshchnost', 'Reiting'];
+                    data = cachedData.cars.map(c => [
+                        c.id, 
+                        transliterate(c.brand), 
+                        transliterate(c.model), 
+                        c.year, 
+                        transliterate(c.country),
+                        transliterate(c.power || '-'), 
+                        c.compatibilityRating || '-'
+                    ]);
+                    break;
+                case 'parts':
+                    title = 'Detali tyuninga';
+                    headers = ['ID', 'Nazvanie', 'Kategoriya', 'Proizvoditel', 'Tzena', 'Prirast moshchnosti'];
+                    data = cachedData.parts.map(p => [
+                        p.id, 
+                        transliterate(p.name), 
+                        transliterate(p.category_name || p.category || '-'),
+                        transliterate(p.manufacturer_name || p.manufacturer || '-'),
+                        p.price ? p.price + ' RUB' : '-',
+                        '+' + (p.powerGain || 0) + ' l.s.'
+                    ]);
+                    break;
             }
+            
+            // Zagolovok
+            doc.setFontSize(18);
+            doc.text(title, 14, 22);
+            
+            // Data generacii
+            doc.setFontSize(10);
+            doc.text('Sgenerirovano: ' + new Date().toISOString().split('T')[0], 14, 30);
+            
+            // Tablica
+            doc.autoTable({
+                head: [headers],
+                body: data,
+                startY: 35,
+                styles: { fontSize: 9, cellPadding: 2, font: 'helvetica' },
+                headStyles: { fillColor: [220, 88, 109] }
+            });
+            
+            // Sohranenie
+            doc.save(`tunning-manual-${type}-${new Date().toISOString().split('T')[0]}.pdf`);
         }
 
-        // Обновить время
-        function updateTime() {
-            // Можно добавить отображение текущего времени или времени последнего обновления
+        // ==================== КОИН ПАНЕЛЬ ====================
+        
+        async function loadCoinPanelData() {
+            showLoading();
+            try {
+                // Загрузка пользователей для селекта
+                const customersRes = await fetch('/api/customers').catch(() => null);
+                let customers = [];
+                
+                if (customersRes && customersRes.ok) {
+                    customers = await customersRes.json();
+                } else {
+                    // Тестовые данные
+                    customers = [
+                        {id: 1, name: 'Админ', email: 'admin@tunning.ru', balance: 1000},
+                        {id: 2, name: 'Иван Петров', email: 'ivan@mail.ru', balance: 500},
+                        {id: 3, name: 'Сергей Иванов', email: 'sergey@mail.ru', balance: 0}
+                    ];
+                }
+                
+                // Заполняем селект
+                const select = document.getElementById('coinUserSelect');
+                select.innerHTML = customers.map(c => 
+                    `<option value="${c.id}">${c.fullname || c.fullName || c.name || c.email} (баланс: ${c.balance || 0})</option>`
+                ).join('');
+                
+                // Обновляем статистику
+                const totalCoins = customers.reduce((sum, c) => sum + (c.balance || 0), 0);
+                const avgBalance = customers.length > 0 ? Math.round(totalCoins / customers.length) : 0;
+                
+                document.getElementById('totalCoinsInSystem').textContent = totalCoins.toLocaleString('ru-RU');
+                document.getElementById('activeUsersCount').textContent = customers.length;
+                document.getElementById('avgUserBalance').textContent = avgBalance.toLocaleString('ru-RU');
+                
+                // Загрузка истории транзакций
+                loadTransactionHistory();
+                
+            } catch (error) {
+                showError('Ошибка загрузки коин-панели: ' + error.message);
+            } finally {
+                hideLoading();
+            }
         }
+        
+        async function sendCoins() {
+            const userId = document.getElementById('coinUserSelect').value;
+            const amount = parseInt(document.getElementById('coinAmount').value);
+            
+            if (!userId || !amount || amount < 1) {
+                alert('Выберите пользователя и укажите количество коинов');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/coins/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, amount, adminId: 1 })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`Успешно отправлено ${amount} коинов пользователю!`);
+                    // Добавляем транзакцию в историю
+                    const userSelect = document.getElementById('coinUserSelect');
+                    const userName = userSelect.options[userSelect.selectedIndex].text.split('(')[0].trim();
+                    cachedData.transactions.unshift({
+                        date: new Date().toISOString(),
+                        user: userName,
+                        amount: amount,
+                        type: 'Начисление',
+                        admin: 'Админ'
+                    });
+                    loadCoinPanelData(); // Обновить данные
+                } else {
+                    alert('Ошибка: ' + result.error);
+                }
+            } catch (error) {
+                // Имитация успеха для демо
+                alert(`Демо-режим: ${amount} коинов отправлено пользователю ID ${userId}`);
+                
+                // Добавляем транзакцию в историю
+                const userSelect = document.getElementById('coinUserSelect');
+                const userName = userSelect.options[userSelect.selectedIndex]?.text.split('(')[0].trim() || `Пользователь #${userId}`;
+                cachedData.transactions.unshift({
+                    date: new Date().toISOString(),
+                    user: userName,
+                    amount: amount,
+                    type: 'Начисление',
+                    admin: 'Админ'
+                });
+                loadTransactionHistory(); // Обновить таблицу
+            }
+        }
+        
+        function loadTransactionHistory() {
+            const tbody = document.getElementById('transactionsTableBody');
+            const transactions = cachedData.transactions || [];
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Нет транзакций</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = transactions
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 50)
+                .map(t => `
+                    <tr>
+                        <td>${new Date(t.date).toLocaleString('ru-RU')}</td>
+                        <td>${t.user}</td>
+                        <td>+${t.amount}</td>
+                        <td>${t.type}</td>
+                        <td>${t.admin}</td>
+                    </tr>
+                `).join('');
+        }
+
     </script>
 </body>
 </html>

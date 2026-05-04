@@ -22,6 +22,9 @@
                     <li><a href="http://localhost:8080/api-docs" target="_blank" id="swaggerLink">Swagger</a></li>
                 </ul>
                 <div class="nav-actions">
+                    <span class="coin-balance" id="coinBalance" style="display: none;">0</span>
+                    <button class="btn-news" onclick="openNewsModal()">Новости</button>
+                    <button class="btn-transactions" onclick="openTransactionsModal()">Транзакции</button>
                     <button class="btn-garage" onclick="openGarageModal()">Гараж</button>
                     <button class="btn-favorites" onclick="openFavoritesModal()">Избранное <span id="favoritesCount">(0)</span></button>
                     <button class="btn-auth" id="authButton" onclick="handleAuthClick()">Вход</button>
@@ -341,9 +344,52 @@
         document.addEventListener('DOMContentLoaded', function() {
             updateAuthButton();
             updateFavoritesCount();
+            loadUserBalance();
         });
+
+        // Загрузка баланса пользователя
+        async function loadUserBalance() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser && currentUser.id) {
+                try {
+                    const response = await fetch(`/api/customers/${currentUser.id}`);
+                    if (response.ok) {
+                        const user = await response.json();
+                        const balanceEl = document.getElementById('coinBalance');
+                        balanceEl.textContent = (user.balance || 0).toLocaleString('ru-RU');
+                        balanceEl.style.display = 'flex';
+                    }
+                } catch (error) {
+                    console.error('Error loading balance:', error);
+                }
+            }
+        }
+
+        // Открыть модальное окно транзакций
+        function openTransactionsModal() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (!currentUser.id) {
+                alert('Пожалуйста, войдите в систему');
+                return;
+            }
+            if (typeof loadTransactionsModal === 'function') {
+                loadTransactionsModal();
+            } else {
+                alert('История транзакций:\n\nПока нет реализованных транзакций.');
+            }
+        }
+
+        // Открыть модальное окно новостей
+        function openNewsModal() {
+            if (typeof loadNewsModal === 'function') {
+                loadNewsModal();
+            } else {
+                alert('Новости:\n\nСистема новостей в разработке.');
+            }
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/garage.js"></script>
+    <script src="../js/news.js"></script>
 </body>
 </html>

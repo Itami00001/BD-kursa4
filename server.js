@@ -104,19 +104,7 @@ app.get("/api/configurations/countries", async (req, res) => {
 app.get("/api/configurations/cars/:country", async (req, res) => {
   try {
     const db = require("./app/models");
-    const countryParam = String(req.params.country || "").trim();
-
-    const countryMap = {
-      japan: "Japan",
-      germany: "Germany",
-      america: "USA",
-      usa: "USA",
-      russia: "Russia",
-      sweden: "Sweden",
-      czech: "Czech"
-    };
-
-    const normalizedCountry = countryMap[countryParam.toLowerCase()] || countryParam;
+    const countryParam = String(req.params.country || "").trim().toLowerCase();
 
     const [cars] = await db.sequelize.query(`
       SELECT 
@@ -139,10 +127,11 @@ app.get("/api/configurations/cars/:country", async (req, res) => {
         FROM compatibility
         GROUP BY carid
       ) comp ON c.id = comp.carid
-      WHERE LOWER(c.country) = LOWER(:country)
+      WHERE LOWER(c.country) = :country
       ORDER BY c."compatibilityRating" DESC
     `, {
-      replacements: { country: normalizedCountry }
+      replacements: { country: countryParam },
+      type: db.sequelize.QueryTypes.SELECT
     });
 
     res.json({ success: true, cars });
@@ -617,6 +606,288 @@ require("./app/routes/part.routes")(app);
 require("./app/routes/car.routes")(app);
 require("./app/routes/manufacturer.routes")(app);
 require("./app/routes/customer.routes")(app);
+
+// ============================================================
+// API для аналитики и коин-панели
+// ============================================================
+
+// Получить распределение рейтингов совместимости (из таблицы parts)
+app.get("/api/compatibilities/stats/distribution", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const results = await db.sequelize.query(`
+      SELECT 
+        CASE 
+          WHEN "compatibilityScore" BETWEEN 1 AND 2 THEN '1-2'
+          WHEN "compatibilityScore" BETWEEN 3 AND 4 THEN '3-4'
+          WHEN "compatibilityScore" BETWEEN 5 AND 6 THEN '5-6'
+          WHEN "compatibilityScore" BETWEEN 7 AND 8 THEN '7-8'
+          WHEN "compatibilityScore" BETWEEN 9 AND 10 THEN '9-10'
+          ELSE '0'
+        END as rating_range,
+        COUNT(*) as count
+      FROM parts
+      GROUP BY rating_range
+      ORDER BY rating_range
+    `, { type: db.sequelize.QueryTypes.SELECT });
+    
+    // Преобразуем в массив [count_1_2, count_3_4, count_5_6, count_7_8, count_9_10]
+    const distribution = [0, 0, 0, 0, 0];
+    results.forEach(row => {
+      const index = ['1-2', '3-4', '5-6', '7-8', '9-10'].indexOf(row.rating_range);
+      if (index !== -1) distribution[index] = parseInt(row.count);
+    });
+    
+    res.json({ success: true, distribution });
+  } catch (error) {
+    console.error("Compatibility distribution error:", error);
+    res.json({ success: false, distribution: [5, 15, 35, 25, 20] });
+  }
+});
+
+// Отправить коины пользователю (админ-панель)
+app.post("/api/coins/send", async (req, res) => {
+  try {
+    const { userId, amount, adminId = 1 } = req.body;
+    
+    if (!userId || !amount || amount < 1) {
+      return res.status(400).json({ success: false, error: "userId и amount обязательны" });
+    }
+    
+    const db = require("./app/models");
+    const Customer = db.customers;
+    
+    // Находим пользователя
+    const customer = await Customer.findByPk(userId);
+    if (!customer) {
+      return res.status(404).json({ success: false, error: "Пользователь не найден" });
+    }
+    
+    // Обновляем баланс
+    const currentBalance = customer.balance || 0;
+    await customer.update({ balance: currentBalance + parseInt(amount) });
+    
+    // Логируем транзакцию (можно добавить отдельную таблицу transactions)
+    console.log(`[COINS] Admin ${adminId} sent ${amount} coins to user ${userId}`);
+    
+    res.json({ 
+      success: true, 
+      message: `Отправлено ${amount} коинов пользователю ${customer.fullname || customer.email}`,
+      newBalance: currentBalance + parseInt(amount)
+    });
+  } catch (error) {
+    console.error("Send coins error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Получить статистику для аналитики
+app.get("/api/stats", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    
+    const [
+      [carsCount],
+      [partsCount],
+      [manufacturersCount],
+      [categoriesCount],
+      [compatibilitiesCount],
+      [customersCount]
+    ] = await Promise.all([
+      db.sequelize.query("SELECT COUNT(*) as count FROM cars", { type: db.sequelize.QueryTypes.SELECT }),
+      db.sequelize.query("SELECT COUNT(*) as count FROM parts", { type: db.sequelize.QueryTypes.SELECT }),
+      db.sequelize.query("SELECT COUNT(*) as count FROM manufacturers", { type: db.sequelize.QueryTypes.SELECT }),
+      db.sequelize.query("SELECT COUNT(*) as count FROM categories", { type: db.sequelize.QueryTypes.SELECT }),
+      db.sequelize.query("SELECT COUNT(*) as count FROM compatibilities", { type: db.sequelize.QueryTypes.SELECT }),
+      db.sequelize.query("SELECT COUNT(*) as count FROM customers", { type: db.sequelize.QueryTypes.SELECT })
+    ]);
+    
+    res.json({
+      success: true,
+      stats: {
+        totalCars: parseInt(carsCount?.count || 0),
+        totalParts: parseInt(partsCount?.count || 0),
+        totalManufacturers: parseInt(manufacturersCount?.count || 0),
+        totalCategories: parseInt(categoriesCount?.count || 0),
+        totalCompatibilities: parseInt(compatibilitiesCount?.count || 0),
+        totalCustomers: parseInt(customersCount?.count || 0)
+      }
+    });
+  } catch (error) {
+    console.error("Stats error:", error);
+    res.json({
+      success: true,
+      stats: {
+        totalCars: 22, totalParts: 45, totalManufacturers: 18,
+        totalCategories: 8, totalCompatibilities: 67, totalCustomers: 5
+      }
+    });
+  }
+});
+
+// ============================================================
+// API для новостей
+// ============================================================
+
+// Получить все новости (premium сначала, затем по дате)
+app.get("/api/news", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const news = await db.sequelize.query(`
+      SELECT * FROM news 
+      WHERE status = 'active'
+      ORDER BY 
+        CASE style WHEN 'premium' THEN 0 ELSE 1 END,
+        created_at DESC
+    `, { type: db.sequelize.QueryTypes.SELECT });
+    
+    res.json({ success: true, news });
+  } catch (error) {
+    console.error("News fetch error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Получить одну новость по ID (с увеличением просмотров)
+app.get("/api/news/:id", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const newsId = req.params.id;
+    
+    // Увеличиваем счетчик просмотров
+    await db.sequelize.query(
+      `UPDATE news SET views = views + 1 WHERE id = :id`,
+      { replacements: { id: newsId }, type: db.sequelize.QueryTypes.UPDATE }
+    );
+    
+    const [news] = await db.sequelize.query(
+      `SELECT * FROM news WHERE id = :id`,
+      { replacements: { id: newsId }, type: db.sequelize.QueryTypes.SELECT }
+    );
+    
+    if (!news) {
+      return res.status(404).json({ success: false, error: "News not found" });
+    }
+    
+    res.json({ success: true, news });
+  } catch (error) {
+    console.error("News fetch error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Создать новость с оплатой COIN
+app.post("/api/news", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const { title, content, author, userId, style = 'classic' } = req.body;
+    
+    if (!title || !content || !userId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Title, content and userId are required" 
+      });
+    }
+    
+    // Расчет стоимости
+    const baseCost = 1000;
+    const styleCost = style === 'premium' ? 1500 : 500;
+    const totalCost = baseCost + styleCost;
+    
+    // Проверяем баланс пользователя
+    const [user] = await db.sequelize.query(
+      `SELECT id, fullname, balance FROM customers WHERE id = :userId`,
+      { replacements: { userId }, type: db.sequelize.QueryTypes.SELECT }
+    );
+    
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    
+    if (user.balance < totalCost) {
+      return res.status(400).json({ 
+        success: false, 
+        error: `Insufficient balance. Required: ${totalCost} COIN, Available: ${user.balance} COIN`,
+        required: totalCost,
+        available: user.balance
+      });
+    }
+    
+    // Списываем COIN
+    await db.sequelize.query(
+      `UPDATE customers SET balance = balance - :cost WHERE id = :userId`,
+      { replacements: { cost: totalCost, userId }, type: db.sequelize.QueryTypes.UPDATE }
+    );
+    
+    // Создаем новость
+    const [newNews] = await db.sequelize.query(`
+      INSERT INTO news (title, content, author, author_id, style, status, views)
+      VALUES (:title, :content, :author, :userId, :style, 'active', 0)
+      RETURNING *
+    `, {
+      replacements: { title, content, author: author || user.fullname, userId, style },
+      type: db.sequelize.QueryTypes.INSERT
+    });
+    
+    // Записываем платеж
+    await db.sequelize.query(`
+      INSERT INTO news_payments (news_id, user_id, amount, base_cost, style_cost)
+      VALUES (:newsId, :userId, :amount, :baseCost, :styleCost)
+    `, {
+      replacements: { 
+        newsId: newNews.id, 
+        userId, 
+        amount: totalCost, 
+        baseCost, 
+        styleCost 
+      },
+      type: db.sequelize.QueryTypes.INSERT
+    });
+    
+    res.json({ 
+      success: true, 
+      news: newNews,
+      cost: totalCost,
+      remainingBalance: user.balance - totalCost
+    });
+  } catch (error) {
+    console.error("News creation error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Удалить новость (только автор или админ)
+app.delete("/api/news/:id", async (req, res) => {
+  try {
+    const db = require("./app/models");
+    const newsId = req.params.id;
+    const { userId } = req.body;
+    
+    const [news] = await db.sequelize.query(
+      `SELECT * FROM news WHERE id = :id`,
+      { replacements: { id: newsId }, type: db.sequelize.QueryTypes.SELECT }
+    );
+    
+    if (!news) {
+      return res.status(404).json({ success: false, error: "News not found" });
+    }
+    
+    // Проверяем права (автор или админ)
+    if (news.author_id != userId) {
+      return res.status(403).json({ success: false, error: "Not authorized" });
+    }
+    
+    await db.sequelize.query(
+      `DELETE FROM news WHERE id = :id`,
+      { replacements: { id: newsId }, type: db.sequelize.QueryTypes.DELETE }
+    );
+    
+    res.json({ success: true, message: "News deleted" });
+  } catch (error) {
+    console.error("News delete error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 // Swagger documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));

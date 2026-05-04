@@ -3,6 +3,7 @@ const Part = db.parts;
 const Category = db.categories;
 const Manufacturer = db.manufacturers;
 const Op = db.Sequelize.Op;
+const partService = require("../services/partService");
 
 // Create a new part
 exports.create = (req, res) => {
@@ -36,20 +37,15 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all parts
-exports.findAll = (req, res) => {
-  const name = req.query.name;
-  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-
-  Part.findAll({ where: condition })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving parts."
-      });
+exports.findAll = async (req, res) => {
+  try {
+    const data = await partService.getAllParts();
+    res.send(data);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving parts."
     });
+  }
 };
 
 // Find a single part with an id

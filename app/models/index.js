@@ -35,6 +35,7 @@ db.services = require("./service.model.js")(sequelize, Sequelize);
 db.appointments = require("./appointment.model.js")(sequelize, Sequelize);
 db.administrators = require("./administrator.model.js")(sequelize, Sequelize);
 db.systemSettings = require("./systemSetting.model.js")(sequelize, Sequelize);
+db.news = require("./news.model.js")(sequelize, Sequelize);
 
 // Определение связей между моделями
 db.categories.hasMany(db.parts, { foreignKey: 'categoryId' });

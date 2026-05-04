@@ -3,27 +3,27 @@ module.exports = (sequelize, Sequelize) => {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
+      field: 'id'
     },
-    carId: {
+    carid: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: {
-        model: 'cars',
-        key: 'id'
-      }
+      field: 'carid'
     },
-    partId: {
+    partid: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: {
-        model: 'parts',
-        key: 'id'
-      }
+      field: 'partid'
     },
     note: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
+      field: 'note'
     }
+  }, {
+    underscored: false,
+    freezeTableName: true,
+    timestamps: false
   });
 
   return Compatibility;
